@@ -327,7 +327,7 @@ public class UpstreamSession {
         profile = packet.decoded;
 
         // Verify the integrity of the LoginPacket
-        if (proxy.getConfig().authenticate_players && !packet.decoded.isLoginVerified()) {
+        if ((proxy.getConfig().authenticate_players || proxy.getAuthMode().equalsIgnoreCase("hybrid")) && (!packet.decoded.isLoginVerified() || profile.xuid == null)) {
             status.status = PlayStatusPacket.LOGIN_FAILED_INVALID_TENANT;
             sendPacket(status, true);
             disconnect(proxy.getLang().get(Lang.LOGIN_VERIFY_FAILED));

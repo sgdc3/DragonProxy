@@ -1,5 +1,6 @@
 package org.dragonet.plugin.dpaddon.bungee;
 
+import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -30,12 +31,13 @@ public class HybridLoginListener implements Listener {
             plugin.getLogger().info("Detected DragonProxy connection! ");
             plugin.getLogger().info("NAME = " + e.getConnection().getName());
             e.getConnection().setOnlineMode(false);
-            e.getConnection().setUniqueId(new UUID(0L, 0xFF112233L));
+            // e.getConnection().setUniqueId(new UUID(0L, 0xFF112233L));
         }
     }
 
     @EventHandler
-    public void post(PostLoginEvent e) {
-        plugin.getLogger().info("UUID = " + e.getPlayer().getUniqueId().toString());
+    public void post(PlayerHandshakeEvent e) {
+        plugin.getLogger().info("HANDSHAKE HOST=" + e.getHandshake().getHost());
+        //plugin.getLogger().info("UUID = " + e.getPlayer().getUniqueId().toString());
     }
 }

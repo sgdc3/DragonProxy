@@ -45,9 +45,15 @@ remote_servers:
 # online  : Traditional login screen by DragonProxy, BUGGY.
 # offline : Run the server in offline mode so you can't join premium 
 #           servers like Hypixel. 
+# hybrid  : Only available for server owners who wanted to enable both
+#           Mojang accounts and xbox accounts. 
+#           Use `online` mode for servers that are not yours. 
+#           To use this, you MUST properly  install the addon to your BungeeCord server!! 
 mode: online
 
 # Should we authenticate connecting player sessions with xbox live?
+# It will be OVERRIDDEN TO TRUE if you're using `hybrid` mode. 
+# This option only works for `online`/`offline` modes! 
 authenticate_players: true
 
 # The in-game command prefix for players, by default it's Minecraft command prefix (a slash).

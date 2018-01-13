@@ -12,20 +12,55 @@
  */
 package org.dragonet.proxy.network;
 
+import com.github.steveice10.mc.protocol.ClientListener;
+import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
-import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.proxy.DesktopServer;
 import org.dragonet.proxy.DragonProxy;
+import com.github.steveice10.mc.auth.data.GameProfile;
+import com.github.steveice10.mc.auth.exception.request.InvalidCredentialsException;
+import com.github.steveice10.mc.auth.exception.request.RequestException;
+import com.github.steveice10.mc.auth.exception.request.ServiceUnavailableException;
+import com.github.steveice10.mc.auth.service.SessionService;
+import com.github.steveice10.mc.protocol.data.SubProtocol;
+import com.github.steveice10.mc.protocol.data.handshake.HandshakeIntent;
+import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
+import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
+import com.github.steveice10.mc.protocol.data.status.handler.ServerPingTimeHandler;
+import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerKeepAlivePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerSetCompressionPacket;
+import com.github.steveice10.mc.protocol.packet.login.client.EncryptionResponsePacket;
+import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
+import com.github.steveice10.mc.protocol.packet.login.server.EncryptionRequestPacket;
+import com.github.steveice10.mc.protocol.packet.login.server.LoginDisconnectPacket;
+import com.github.steveice10.mc.protocol.packet.login.server.LoginSetCompressionPacket;
+import com.github.steveice10.mc.protocol.packet.login.server.LoginSuccessPacket;
+import com.github.steveice10.mc.protocol.packet.status.client.StatusPingPacket;
+import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
+import com.github.steveice10.mc.protocol.packet.status.server.StatusPongPacket;
+import com.github.steveice10.mc.protocol.packet.status.server.StatusResponsePacket;
+import com.github.steveice10.mc.protocol.util.CryptUtil;
+import com.github.steveice10.packetlib.event.session.ConnectedEvent;
+import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import org.dragonet.proxy.configuration.Lang;
+
+import javax.crypto.SecretKey;
+import java.math.BigInteger;
+import java.net.Proxy;
+import java.security.Key;
+import java.util.List;
 
 /**
  * Maintaince the connection between the proxy and remote Minecraft server.
@@ -59,8 +94,38 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         remoteClient.getSession().setConnectTimeout(5);
         remoteClient.getSession().setReadTimeout(5);
         remoteClient.getSession().setWriteTimeout(5);
-        remoteClient.getSession().addListener(new SessionAdapter() {
+        // HACK HERE
+        try {
+            java.lang.reflect.Field f = com.github.steveice10.packetlib.Session.class.getDeclaredField("listeners");
+            List<SessionListener> listeners = (List<SessionListener>) f.get(remoteClient.getSession());
+            listeners.clear();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        remoteClient.getSession().addListener(new ClientListener() {
             public void connected(ConnectedEvent event) {
+                // HACKY STUFF
+                String host = proxy.getAuthMode().equalsIgnoreCase("hybrid") ? makeHybridHostString() : event.getSession().getHost();
+                MinecraftProtocol protocol = (MinecraftProtocol) event.getSession().getPacketProtocol();
+                try {
+                    java.lang.reflect.Method setSubProtocol = MinecraftProtocol.class.getDeclaredMethod("setSubProtocol", SubProtocol.class, boolean.class, Session.class);
+
+                    if (protocol.getSubProtocol() == SubProtocol.LOGIN) {
+                        GameProfile profile = event.getSession().getFlag(MinecraftConstants.PROFILE_KEY);
+                        setSubProtocol.invoke(protocol, SubProtocol.HANDSHAKE, true, event.getSession());
+                        event.getSession().send(new HandshakePacket(MinecraftConstants.PROTOCOL_VERSION, host, event.getSession().getPort(), HandshakeIntent.LOGIN));
+                        setSubProtocol.invoke(protocol, SubProtocol.LOGIN, true, event.getSession());
+                        event.getSession().send(new LoginStartPacket(profile != null ? profile.getName() : ""));
+                    } else if (protocol.getSubProtocol() == SubProtocol.STATUS) {
+                        setSubProtocol.invoke(protocol, SubProtocol.HANDSHAKE, true, event.getSession());
+                        event.getSession().send(new HandshakePacket(MinecraftConstants.PROTOCOL_VERSION, host, event.getSession().getPort(), HandshakeIntent.STATUS));
+                        setSubProtocol.invoke(protocol, SubProtocol.STATUS, true, event.getSession());
+                        event.getSession().send(new StatusQueryPacket());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 proxy.getLogger().info(proxy.getLang().get(Lang.MESSAGE_REMOTE_CONNECTED, upstream.getUsername(),
                     upstream.getRemoteAddress()));
 
@@ -81,6 +146,10 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
             }
 
             public void packetReceived(PacketReceivedEvent event) {
+                super.packetReceived(event);
+
+                /* == DragonProxy code == */
+                if(!((MinecraftProtocol)remoteClient.getSession().getPacketProtocol()).getSubProtocol().equals(SubProtocol.GAME)) return;
                 // Handle the packet
                 try {
                     PEPacket[] packets = PacketTranslatorRegister.translateToPE(upstream, event.getPacket());
@@ -102,6 +171,10 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
             }
         });
         remoteClient.getSession().connect();
+    }
+
+    public String makeHybridHostString() {
+        return upstream.getProfile().xuid + ":" + remoteClient.getSession().getHost();
     }
 
     public void disconnect() {

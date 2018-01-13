@@ -33,6 +33,7 @@ public class LoginChainDecoder {
     private final byte[] clientDataJWT;
     public String username;
     public UUID clientUniqueId;
+    public String xuid;
     public JsonObject clientData;
     public String language;
     public Skin skin;
@@ -134,6 +135,9 @@ public class LoginChainDecoder {
                 }
                 if (extra.has("identity")) {
                     this.clientUniqueId = UUID.fromString(extra.get("identity").getAsString());
+                }
+                if (extra.has("XUID")) {
+                    this.xuid = extra.get("XUID").getAsString();
                 }
 
                 break;
