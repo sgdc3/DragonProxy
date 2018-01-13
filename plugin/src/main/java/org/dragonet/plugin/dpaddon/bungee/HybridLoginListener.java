@@ -23,7 +23,7 @@ public class HybridLoginListener implements Listener {
     }
 
     @EventHandler
-    private void onPreLogin(PreLoginEvent e) {
+    public void onPreLogin(PreLoginEvent e) {
         String addr = e.getConnection().getAddress().getAddress().getHostAddress();
         plugin.getLogger().info("Connection from " + addr);
         if(ips.contains(addr)) {
@@ -35,7 +35,7 @@ public class HybridLoginListener implements Listener {
     }
 
     @EventHandler
-    private void post(PostLoginEvent e) {
+    public void post(PostLoginEvent e) {
         plugin.getLogger().info("UUID = " + e.getPlayer().getUniqueId().toString());
     }
 }
