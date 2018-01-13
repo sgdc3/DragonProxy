@@ -1,7 +1,7 @@
-package org.dragonet.plugin.bukkit;
+package org.dragonet.plugin.dpaddon.bukkit;
 
-import org.dragonet.plugin.bukkit.processors.ContainerCloseProcessor;
-import org.dragonet.plugin.bukkit.processors.ModalFormResponseProcessor;
+import org.dragonet.plugin.dpaddon.bukkit.processors.ContainerCloseProcessor;
+import org.dragonet.plugin.dpaddon.bukkit.processors.ModalFormResponseProcessor;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.ContainerClosePacket;
 import org.dragonet.protocol.packets.InventoryTransactionPacket;
@@ -9,7 +9,7 @@ import org.dragonet.protocol.packets.ModalFormResponsePacket;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.dragonet.plugin.bukkit.processors.InventoryTransactionProcessor;
+import org.dragonet.plugin.dpaddon.bukkit.processors.InventoryTransactionProcessor;
 
 public final class BedrockPacketProcessorRegister {
 

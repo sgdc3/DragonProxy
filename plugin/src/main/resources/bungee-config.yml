@@ -1,0 +1,21 @@
+# DragonProxy Bukkit Addon
+# this is an optional plugin! not necessary for DragonProxy to work!
+
+# Enable Hybrid login for Java Edition and MCPE login?
+#
+# 1. This means desktop/MCJE players can use Mojang accounts,
+# while Bedrock/MCPE players can use xbox accounts.
+#
+# 2. Mojang account usernames and xbox usernames can be the
+# same for some players so make sure your plugins support
+# UUID OR IT MIGHT CAUSE SECURITY PROBLEMS!
+#
+# 3. You have to set DragonProxy to hybrid mode as well!
+#
+enable-hybrid-login: false
+
+# Which IPs will be recognised as Bedrock/MCPE players?
+# Fill in all your DragonProxy instances here
+hybrid-login-ips:
+  - "127.0.0.1"
+# - "x.x.x.x"

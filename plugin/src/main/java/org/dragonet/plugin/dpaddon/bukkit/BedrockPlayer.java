@@ -1,4 +1,4 @@
-package org.dragonet.plugin.bukkit;
+package org.dragonet.plugin.dpaddon.bukkit;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -6,7 +6,7 @@ import org.dragonet.common.gui.ModalFormComponent;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.ModalFormRequestPacket;
 import org.dragonet.common.utilities.BinaryStream;
-import org.dragonet.plugin.plugin.dpaddon.DPAddonBukkit;
+import org.dragonet.plugin.dpaddon.DPAddonBukkit;
 
 public class BedrockPlayer {
 

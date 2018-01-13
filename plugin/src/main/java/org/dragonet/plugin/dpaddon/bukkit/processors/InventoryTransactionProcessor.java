@@ -1,7 +1,7 @@
-package org.dragonet.plugin.bukkit.processors;
+package org.dragonet.plugin.dpaddon.bukkit.processors;
 
-import org.dragonet.plugin.bukkit.BedrockPacketProcessor;
-import org.dragonet.plugin.bukkit.BedrockPlayer;
+import org.dragonet.plugin.dpaddon.bukkit.BedrockPacketProcessor;
+import org.dragonet.plugin.dpaddon.bukkit.BedrockPlayer;
 import org.dragonet.protocol.packets.InventoryTransactionPacket;
 
 public class InventoryTransactionProcessor implements BedrockPacketProcessor<InventoryTransactionPacket> {

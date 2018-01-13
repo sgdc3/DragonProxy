@@ -1,0 +1,5 @@
+# DragonProxy Bukkit Addon
+# this is an optional plugin! not necessary for DragonProxy to work!
+
+# This plugin allows other plugins send packets to Bedrock/MCPE clients directly.
+# and can listen for packets as well, so you can create modal forms easily!

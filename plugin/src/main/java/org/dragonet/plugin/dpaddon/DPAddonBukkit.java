@@ -10,17 +10,19 @@
  *
  * @author The Dragonet Team
  */
-package org.dragonet.plugin.plugin.dpaddon;
+package org.dragonet.plugin.dpaddon;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dragonet.plugin.bukkit.BedrockPlayer;
-import org.dragonet.plugin.bukkit.DPPluginMessageListener;
+import org.dragonet.plugin.dpaddon.bukkit.BedrockPlayer;
+import org.dragonet.plugin.dpaddon.bukkit.DPPluginMessageListener;
 import org.dragonet.common.utilities.BinaryStream;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +34,8 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
         return instance;
     }
 
+    private YamlConfiguration config;
+
     private DPPluginMessageListener pluginMessageListener;
 
     private final Set<Player> bedrockPlayers = new HashSet<>();
@@ -40,12 +44,20 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
 
+        saveResource("bukkit-config.yml", false);
+        config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "bukkit-config.yml"));
+
         getLogger().info("Registering event listener... ");
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Registering channels... ");
         pluginMessageListener = new DPPluginMessageListener(this);
         getServer().getMessenger().registerIncomingPluginChannel(this, "DragonProxy", pluginMessageListener);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "DragonProxy");
+    }
+
+    @Override
+    public YamlConfiguration getConfig() {
+        return config;
     }
 
     public void detectedBedrockPlayer(Player player) {

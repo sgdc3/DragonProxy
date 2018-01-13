@@ -10,7 +10,7 @@
  *
  * @author The Dragonet Team
  */
-package org.dragonet.plugin.plugin.dpaddon;
+package org.dragonet.plugin.dpaddon;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -19,9 +19,16 @@ import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.plugin.dpaddon.bungee.HybridLoginListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,11 +36,42 @@ import java.util.concurrent.TimeUnit;
 
 public class DPAddonBungee extends Plugin implements Listener {
 
+    private Configuration config;
+
     public final Set<ProxiedPlayer> recognisedBedrockPlayers = Collections.synchronizedSet(new HashSet<>());
+
+    public Configuration getConfig() {
+        return config;
+    }
 
     @Override
     public void onEnable() {
+        getDataFolder().mkdirs();
+        File conf = new File(getDataFolder(), "bungee-config.yml");
+        try {
+            if(!conf.exists()) {
+                FileOutputStream fos = new FileOutputStream(conf);
+                InputStream ins = getClass().getResourceAsStream("/bungee-config.yml");
+                byte[] buff = new byte[256];
+                int read;
+                while((read = ins.read(buff)) != -1) {
+                    fos.write(buff, 0, read);
+                }
+                ins.close();
+                fos.close();
+            }
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(conf);
+        } catch (Exception e) {
+            getLogger().warning("Failed to load configuration file! ");
+            return;
+        }
+
         getProxy().getPluginManager().registerListener(this, this);
+
+        if(config.getBoolean("enable-hybrid-login")) {
+            getLogger().info("Beep! Enabling hybrid login for Mojang and xbox accounts... ");
+            getProxy().getPluginManager().registerListener(this, new HybridLoginListener(this));
+        }
     }
 
     @EventHandler

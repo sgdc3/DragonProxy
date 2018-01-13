@@ -1,4 +1,4 @@
-package org.dragonet.plugin.bukkit;
+package org.dragonet.plugin.dpaddon.bukkit;
 
 import org.dragonet.protocol.PEPacket;
 
