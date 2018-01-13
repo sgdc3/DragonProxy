@@ -96,7 +96,8 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         remoteClient.getSession().setWriteTimeout(5);
         // HACK HERE
         try {
-            java.lang.reflect.Field f = com.github.steveice10.packetlib.Session.class.getDeclaredField("listeners");
+            java.lang.reflect.Field f = com.github.steveice10.packetlib.tcp.TcpSession.class.getDeclaredField("listeners");
+            f.setAccessible(true);
             List<SessionListener> listeners = (List<SessionListener>) f.get(remoteClient.getSession());
             listeners.clear();
         } catch (Exception e){
@@ -107,20 +108,20 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
                 // HACKY STUFF
                 String host = proxy.getAuthMode().equalsIgnoreCase("hybrid") ? makeHybridHostString() : event.getSession().getHost();
                 MinecraftProtocol protocol = (MinecraftProtocol) event.getSession().getPacketProtocol();
+                if(protocol.getSubProtocol() == SubProtocol.STATUS) {
+                    super.connected(event);
+                    return;
+                }
                 try {
                     java.lang.reflect.Method setSubProtocol = MinecraftProtocol.class.getDeclaredMethod("setSubProtocol", SubProtocol.class, boolean.class, Session.class);
+                    setSubProtocol.setAccessible(true);
 
                     if (protocol.getSubProtocol() == SubProtocol.LOGIN) {
                         GameProfile profile = event.getSession().getFlag(MinecraftConstants.PROFILE_KEY);
                         setSubProtocol.invoke(protocol, SubProtocol.HANDSHAKE, true, event.getSession());
                         event.getSession().send(new HandshakePacket(MinecraftConstants.PROTOCOL_VERSION, host, event.getSession().getPort(), HandshakeIntent.LOGIN));
                         setSubProtocol.invoke(protocol, SubProtocol.LOGIN, true, event.getSession());
-                        event.getSession().send(new LoginStartPacket(profile != null ? profile.getName() : ""));
-                    } else if (protocol.getSubProtocol() == SubProtocol.STATUS) {
-                        setSubProtocol.invoke(protocol, SubProtocol.HANDSHAKE, true, event.getSession());
-                        event.getSession().send(new HandshakePacket(MinecraftConstants.PROTOCOL_VERSION, host, event.getSession().getPort(), HandshakeIntent.STATUS));
-                        setSubProtocol.invoke(protocol, SubProtocol.STATUS, true, event.getSession());
-                        event.getSession().send(new StatusQueryPacket());
+                        event.getSession().send(new LoginStartPacket(profile.getName()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

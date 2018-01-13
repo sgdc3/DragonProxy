@@ -14,8 +14,9 @@
 #
 enable-hybrid-login: false
 
-# Which IPs will be recognised as Bedrock/MCPE players?
-# Fill in all your DragonProxy instances here
-hybrid-login-ips:
-  - "127.0.0.1"
-# - "x.x.x.x"
+hybrid-login:
+  # Which IPs will be recognised as Bedrock/MCPE players?
+  # Fill in all your DragonProxy instances here
+  proxy-ips:
+    - "127.0.0.1"
+  # - "x.x.x.x"
