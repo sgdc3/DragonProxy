@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -27,7 +27,7 @@ public class PCBlockChangePacketTranslator implements IPCPacketTranslator<Server
     public PEPacket[] translate(UpstreamSession session, ServerBlockChangePacket packet) {
         ItemEntry entry = ItemBlockTranslator.translateToPE(packet.getRecord().getBlock().getId(), packet.getRecord().getBlock().getData());
         UpdateBlockPacket pk = new UpdateBlockPacket();
-        pk.flags = UpdateBlockPacket.FLAG_NEIGHBORS << 4;
+        pk.flags = UpdateBlockPacket.FLAG_NEIGHBORS;
         pk.data = entry.getPEDamage();
         pk.id = entry.getId();
         pk.blockPosition = new BlockPosition(packet.getRecord().getPosition());

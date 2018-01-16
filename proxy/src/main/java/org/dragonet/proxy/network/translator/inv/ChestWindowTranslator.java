@@ -12,6 +12,8 @@
  */
 package org.dragonet.proxy.network.translator.inv;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.dragonet.common.data.inventory.InventoryType;
 import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.maths.BlockPosition;
@@ -24,26 +26,62 @@ import org.dragonet.protocol.packets.*;
 
 public class ChestWindowTranslator implements IInventoryTranslator {
 
-    public boolean open(UpstreamSession session, CachedWindow window) {
+    public boolean prepare(UpstreamSession session, CachedWindow window) {
         BlockPosition pos = new BlockPosition((int) session.getEntityCache().getClientEntity().x,
-            (int) session.getEntityCache().getClientEntity().y - 4,
-            (int) session.getEntityCache().getClientEntity().z);
+                (int) session.getEntityCache().getClientEntity().y - 4,
+                (int) session.getEntityCache().getClientEntity().z);
 
-        session.getDataCache().put(CacheKey.WINDOW_OPENED_ID, window.windowId);
         session.getDataCache().put(CacheKey.WINDOW_BLOCK_POSITION, pos);
         session.sendFakeBlock(pos.x, pos.y, pos.z, 54, 0);
 
         BlockEntityDataPacket blockEntityData = new BlockEntityDataPacket();
-        blockEntityData.blockPosition = new BlockPosition(pos.x, pos.y, pos.z);
-        blockEntityData.tag = ItemBlockTranslator.translateBlockEntityToPE(ItemBlockTranslator.newTileTag("Chest", pos.x, pos.y, pos.z));
-        session.sendPacket(blockEntityData);
+        blockEntityData.blockPosition = pos;
+        blockEntityData.tag = ItemBlockTranslator.translateBlockEntityToPE(ItemBlockTranslator.newTileTag("minecraft:chest", pos.x, pos.y, pos.z));
+        if (window.size - 36 > 27) { //DoubleChest
+            blockEntityData.tag.putInt("pairx", pos.x + 1);
+            blockEntityData.tag.putInt("pairz", pos.z);
+        } else //SimpleChest
+            session.sendPacket(blockEntityData);
+
+        if (window.size - 36 > 27) { //DoubleChest
+            BlockPosition pos2 = new BlockPosition(pos.x + 1, pos.y, pos.z);
+            session.sendFakeBlock(pos2.x, pos2.y, pos2.z, 54, 0);
+            BlockEntityDataPacket blockEntityData2 = new BlockEntityDataPacket();
+            blockEntityData2.blockPosition = pos2;
+            blockEntityData2.tag = ItemBlockTranslator.translateBlockEntityToPE(ItemBlockTranslator.newTileTag("minecraft:chest", pos2.x, pos2.y, pos2.z));
+            blockEntityData2.tag.putInt("pairx", pos.x);
+            blockEntityData2.tag.putInt("pairz", pos.z);
+            session.sendPacket(blockEntityData2);
+            session.sendPacket(blockEntityData);
+            ArrayList<BlockPosition> posList = new ArrayList<>();
+            posList.add(pos);
+            posList.add(pos2);
+            session.getDataCache().put(CacheKey.WINDOW_BLOCK_POSITION, posList);
+        }
+        System.out.println("ChestWindowTranslator.prepare " + window.windowId);
+        return true;
+    }
+
+    public boolean open(UpstreamSession session, CachedWindow window) {
+
+//        System.out.println("size : " + window.size);
+//        if (window.size - 36 > 27)
+//            System.out.println("Double chest opened");
+//        else
+//            System.out.println("Simple chest opened");
+        session.getDataCache().put(CacheKey.WINDOW_OPENED_ID, window.windowId);
+        session.getDataCache().put(CacheKey.WINDOW_OPENED_SIZE, window.size - 36); //-36 for the player inv size
+
+        BlockPosition pos = new BlockPosition((int) session.getEntityCache().getClientEntity().x,
+                (int) session.getEntityCache().getClientEntity().y - 4,
+                (int) session.getEntityCache().getClientEntity().z);
 
         ContainerOpenPacket pk = new ContainerOpenPacket();
-        pk.eid = 1;
         pk.windowId = window.windowId;
-        pk.type = window.size <= 27 ? InventoryType.PEInventory.CHEST : InventoryType.PEInventory.DOUBLE_CHEST;
-        pk.position = new BlockPosition(pos.x, pos.y, pos.z);
+        pk.type = 0;
+        pk.position = pos;
         session.sendPacket(pk);
+        System.out.println("ChestWindowTranslator.open " + window.windowId);
         return true;
     }
 
@@ -63,9 +101,8 @@ public class ChestWindowTranslator implements IInventoryTranslator {
         InventoryContentPacket pk = new InventoryContentPacket();
         pk.windowId = win.windowId;
         pk.items = new Slot[win.slots.length];
-        for (int i = 0; i < pk.items.length; i++) {
+        for (int i = 0; i < pk.items.length; i++)
             pk.items[i] = ItemBlockTranslator.translateSlotToPE(win.slots[i]);
-        }
         session.sendPacket(pk, true);
     }
 }
