@@ -64,23 +64,25 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         remoteClient.getSession().setConnectTimeout(5);
         remoteClient.getSession().setReadTimeout(5);
         remoteClient.getSession().setWriteTimeout(5);
-        remoteClient.getSession().addListener(new ClientListener() {
+        remoteClient.getSession().addListener(new SessionAdapter() {
 
             @Override
             public void packetSending(PacketSendingEvent event) { //Intercept packets and change data
                 if (proxy.getAuthMode().equalsIgnoreCase("hybrid")){
                     if (protocol.getSubProtocol() == SubProtocol.HANDSHAKE && event.getPacket() instanceof HandshakePacket) {
                         HandshakePacket packet = (HandshakePacket) event.getPacket();
-                        packet = new HandshakePacket(packet.getProtocolVersion(), makeHybridHostString(), packet.getPort(), packet.getIntent());
+                        String host = remoteClient.getSession().getHost() + "\0" + upstream.getProfile().xuid;
+                        packet = new HandshakePacket(packet.getProtocolVersion(), host, packet.getPort(), packet.getIntent());
                         event.setPacket(packet);
                         System.out.println("HandshakePacket----------------------------------------");
                     }
-                    if (protocol.getSubProtocol() == SubProtocol.LOGIN && event.getPacket() instanceof LoginStartPacket) {
-                        GameProfile profile = event.getSession().getFlag(MinecraftConstants.PROFILE_KEY);
-                        LoginStartPacket packet = new LoginStartPacket(profile.getName());
-                        event.setPacket(packet);
-                        System.out.println("LoginStartPacket----------------------------------------");
-                    }
+                    //Why do that, i think it's OK
+//                    if (protocol.getSubProtocol() == SubProtocol.LOGIN && event.getPacket() instanceof LoginStartPacket) {
+//                        GameProfile profile = event.getSession().getFlag(MinecraftConstants.PROFILE_KEY);
+//                        LoginStartPacket packet = new LoginStartPacket(profile.getName());
+//                        event.setPacket(packet);
+//                        System.out.println("LoginStartPacket----------------------------------------");
+//                    }
                 }
             }
 
@@ -133,10 +135,6 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
             }
         });
         remoteClient.getSession().connect();
-    }
-
-    public String makeHybridHostString() {
-        return upstream.getProfile().xuid + ":" + remoteClient.getSession().getHost();
     }
 
     public void disconnect() {
