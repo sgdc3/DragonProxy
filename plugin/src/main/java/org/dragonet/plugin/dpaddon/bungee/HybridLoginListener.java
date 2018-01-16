@@ -25,27 +25,27 @@ public class HybridLoginListener implements Listener {
     }
 
     @EventHandler
-    public void onHandshake(PlayerHandshakeEvent e) {
-        plugin.getLogger().info("HANDSHAKE HOST=" + e.getHandshake().getHost());
-        String addr = e.getConnection().getAddress().getAddress().getHostAddress();
-        if (!ips.contains(addr)) return;
-        String[] args = e.getHandshake().getHost().split(":");
+    public void onHandshake(PlayerHandshakeEvent event) {
+        plugin.getLogger().info("HANDSHAKE HOST=" + event.getHandshake().getHost());
+        String addr = event.getConnection().getAddress().getAddress().getHostAddress();
+        if (!ips.contains(addr) && !event.getHandshake().getHost().contains(":"))
+            return;
+        String[] args = event.getHandshake().getHost().split(":");
         String xuid = args[0];
         String host = args[1];
-        e.getHandshake().setHost(host);
+        event.getHandshake().setHost(host);
         plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
-        //e.getConnection().setOnlineMode(false);
-        verifiedPlayers.put(e.getConnection(), xuid);
+        verifiedPlayers.put(event.getConnection(), xuid);
     }
 
     @EventHandler
-    public void onPreLogin(PreLoginEvent e) {
-        if(verifiedPlayers.containsKey(e.getConnection())) {
-            e.getConnection().setOnlineMode(false);
-            e.getConnection().setUniqueId(UUID.nameUUIDFromBytes(
-                ("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getConnection())).getBytes(StandardCharsets.UTF_8)
+    public void onPreLogin(PreLoginEvent event) {
+        if (verifiedPlayers.containsKey(event.getConnection())) {
+            event.getConnection().setOnlineMode(false);
+            event.getConnection().setUniqueId(UUID.nameUUIDFromBytes(
+                    ("BedrockPlayer:XUID:" + verifiedPlayers.get(event.getConnection())).getBytes(StandardCharsets.UTF_8)
             ));
-            verifiedPlayers.remove(e.getConnection());
+            verifiedPlayers.remove(event.getConnection());
         }
     }
 }

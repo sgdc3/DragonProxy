@@ -25,6 +25,9 @@ import org.dragonet.common.utilities.BinaryStream;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 public class DPAddonBukkit extends JavaPlugin implements Listener {
 
@@ -78,6 +81,23 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
         if(bedrockPlayers.contains(e.getPlayer())) {
             bedrockPlayers.remove(e.getPlayer());
         }
+    }
+
+    @EventHandler
+    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
+        System.out.println("AsyncPlayerPreLoginEvent " + e.getAddress());
+        System.out.println("AsyncPlayerPreLoginEvent " + e.getLoginResult().name());
+    }
+
+    @EventHandler
+    public void onPlayerLoginEvent(PlayerLoginEvent e) {
+        System.out.println("PlayerLoginEvent " + e.getRealAddress());
+        System.out.println("PlayerLoginEvent " + e.getResult().name());
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        System.out.println("PlayerJoinEvent ");
     }
 
     public boolean isPlayerFromBedrock(Player player) {
