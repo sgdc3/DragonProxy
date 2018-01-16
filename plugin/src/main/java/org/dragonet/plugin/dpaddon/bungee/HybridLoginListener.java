@@ -6,6 +6,7 @@ import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.plugin.dpaddon.DPAddonBungee;
+import net.md_5.bungee.connection.InitialHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -26,16 +27,16 @@ public class HybridLoginListener implements Listener {
 
     @EventHandler
     public void onHandshake(PlayerHandshakeEvent event) {
-        plugin.getLogger().info("HANDSHAKE HOST=" + event.getHandshake().getHost());
-        String addr = event.getConnection().getAddress().getAddress().getHostAddress();
-        if (!ips.contains(addr) && !event.getHandshake().getHost().contains(":"))
+        if (!ips.contains(event.getConnection().getAddress().getAddress().getHostAddress()))
             return;
-        String[] args = event.getHandshake().getHost().split(":");
-        String xuid = args[0];
-        String host = args[1];
-        event.getHandshake().setHost(host);
-        plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
-        verifiedPlayers.put(event.getConnection(), xuid);
+        if (event.getConnection() instanceof InitialHandler)
+        {
+            plugin.getLogger().info("HANDSHAKE HOST=" + event.getHandshake().getHost());
+            InitialHandler handler = (InitialHandler) event.getConnection();
+            String xuid = handler.getExtraDataInHandshake().replace("\0", "");
+            plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
+            verifiedPlayers.put(event.getConnection(), xuid);
+        }
     }
 
     @EventHandler

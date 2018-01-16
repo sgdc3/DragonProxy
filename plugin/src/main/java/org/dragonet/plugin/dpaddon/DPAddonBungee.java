@@ -39,6 +39,7 @@ public class DPAddonBungee extends Plugin implements Listener {
     private Configuration config;
 
     public final Set<ProxiedPlayer> recognisedBedrockPlayers = Collections.synchronizedSet(new HashSet<>());
+    private HybridLoginListener hybridLoginListener;
 
     public Configuration getConfig() {
         return config;
@@ -70,7 +71,8 @@ public class DPAddonBungee extends Plugin implements Listener {
 
         if(config.getBoolean("enable-hybrid-login")) {
             getLogger().info("Beep! Enabling hybrid login for Mojang and xbox accounts... ");
-            getProxy().getPluginManager().registerListener(this, new HybridLoginListener(this));
+            hybridLoginListener = new HybridLoginListener(this);
+            getProxy().getPluginManager().registerListener(this, hybridLoginListener);
         }
     }
 
