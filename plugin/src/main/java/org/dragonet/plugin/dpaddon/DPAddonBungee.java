@@ -24,7 +24,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.BinaryStream;
-import org.dragonet.plugin.dpaddon.bungee.HybridLoginListener;
+import org.dragonet.plugin.dpaddon.bungee.HybridModeListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +39,7 @@ public class DPAddonBungee extends Plugin implements Listener {
     private Configuration config;
 
     public final Set<ProxiedPlayer> recognisedBedrockPlayers = Collections.synchronizedSet(new HashSet<>());
-    private HybridLoginListener hybridLoginListener;
+    private HybridModeListener hybridModeListener;
 
     public Configuration getConfig() {
         return config;
@@ -71,8 +71,9 @@ public class DPAddonBungee extends Plugin implements Listener {
 
         if(config.getBoolean("enable-hybrid-login")) {
             getLogger().info("Beep! Enabling hybrid login for Mojang and xbox accounts... ");
-            hybridLoginListener = new HybridLoginListener(this);
-            getProxy().getPluginManager().registerListener(this, hybridLoginListener);
+            hybridModeListener = new HybridModeListener(this);
+            getProxy().getPluginManager().registerListener(this, hybridModeListener);
+            new File(getDataFolder(), "mappings").mkdirs();
         }
     }
 
