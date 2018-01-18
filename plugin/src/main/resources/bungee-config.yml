@@ -20,3 +20,9 @@ hybrid-login:
   proxy-ips:
     - "127.0.0.1"
   # - "x.x.x.x"
+
+  # hybrid mode authentication servers
+  # used for creating hybrid accounts
+  auth-servers:
+    mcje: "auth-mcje"
+    mcbe: "auth-mcbe"

@@ -1,11 +1,9 @@
 package org.dragonet.plugin.dpaddon.bungee;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PlayerHandshakeEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -14,6 +12,7 @@ import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.common.utilities.ReflectionUtils;
 import org.dragonet.plugin.dpaddon.DPAddonBungee;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class HybridModeListener implements Listener {
                 Object handler = event.getConnection();
                 String xuid = ((String) ReflectionUtils.invoke(handler, "getExtraDataInHandshake", new Class[0], new Object[0])).replace("\0", "");
                 plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
-                verifiedPlayers.put(event.getConnection(), new ProxiedBedrockPlayer(plugin, event.getConnection(), xuid));
+                verifiedPlayers.put(event.getConnection(), new ProxiedBedrockPlayer(plugin, event.getConnection(), xuid, getMappingForBedrock(xuid)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -58,24 +57,57 @@ public class HybridModeListener implements Listener {
     @EventHandler
     public void onPreLogin(PreLoginEvent event) {
         if (verifiedPlayers.containsKey(event.getConnection())) {
-            ProxiedBedrockPlayer bedrockPlayer = verifiedPlayers.get(event.getConnection());
+            // set to offline mode before authenticating
             event.getConnection().setOnlineMode(false);
-            event.getConnection().setUniqueId(UUID.nameUUIDFromBytes(
-                ("BedrockPlayer:XUID:" + bedrockPlayer.getXUID()).getBytes(StandardCharsets.UTF_8)
-            ));
-            // verifiedPlayers.remove(event.getConnection());
+            event.getConnection().setUniqueId(UUID.nameUUIDFromBytes("NotAuthenticated".getBytes(StandardCharsets.UTF_8)));
+        }
+    }
 
-            String username_mapping = getMapping(bedrockPlayer.getXUID());
-            if(username_mapping == null) {
-                username_mapping = "XUID_" + bedrockPlayer;
+    @EventHandler
+    public void onPostLogin(PostLoginEvent event) {
+        if (verifiedPlayers.containsKey(event.getPlayer().getPendingConnection())) {
+            /* ==== Minecraft: Bedrock Edition players ==== */
+
+            PendingConnection connection = event.getPlayer().getPendingConnection();
+            ProxiedBedrockPlayer bedrockPlayer = verifiedPlayers.get(connection);
+
+            if(bedrockPlayer.isMapped()) {
+                if(!updateBungeeCordPlayerInfo(bedrockPlayer.getConnection(), bedrockPlayer.getHybridAccountInfo())) {
+                    event.getPlayer().disconnect(new TextComponent("Server error! (failed to update hybrid account mapping)"));
+                    return;
+                }
+            } else {
+                // send to authentication server
+                event.getPlayer().setReconnectServer(plugin.getProxy().getServerInfo(plugin.getConfig().getString("hybrid-login.auth-servers.mcbe")));
             }
-            try {
-                Object loginRequest = ReflectionUtils.getFieldValue(event.getConnection(), "loginRequest");
-                ReflectionUtils.setFieldValue(loginRequest, "data", username_mapping);
-                ReflectionUtils.setFieldValue(event.getConnection(), "name", username_mapping);
-            } catch (Exception e) {
-                e.printStackTrace();
+        } else {
+            /* ==== Minecraft: Java Edition players ==== */
+
+            UUID originalUniqueId = event.getPlayer().getUniqueId();
+            JSONObject hybridAccountInfo = getMappingForJava(originalUniqueId);
+            if(hybridAccountInfo != null) {
+                if(!updateBungeeCordPlayerInfo(event.getPlayer().getPendingConnection(), hybridAccountInfo)) {
+                    event.getPlayer().disconnect(new TextComponent("Server error! (failed to update hybrid account mapping)"));
+                    return;
+                }
+            } else {
+                // send to authentication server
+                event.getPlayer().setReconnectServer(plugin.getProxy().getServerInfo(plugin.getConfig().getString("hybrid-login.auth-servers.mcje")));
             }
+        }
+    }
+
+    private boolean updateBungeeCordPlayerInfo(PendingConnection connection, JSONObject hybridAccountInfo) {
+        try {
+            Object loginRequest = ReflectionUtils.getFieldValue(connection, "loginRequest");
+            String username = hybridAccountInfo.getString("username");
+            ReflectionUtils.setFieldValue(loginRequest, "data", username);
+            ReflectionUtils.setFieldValue(connection, "name", username);
+            ReflectionUtils.setFieldValue(connection, "uniqueId", UUID.fromString(hybridAccountInfo.getString("uuid")));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -84,23 +116,13 @@ public class HybridModeListener implements Listener {
         verifiedPlayers.remove(e.getPlayer().getPendingConnection());
     }
 
-    public String getMapping(String xuid) {
-        File mappingFile = new File(mappingsDir, xuid + ".mapping");
-        if (!mappingFile.exists()) return null;
-        try {
-            Configuration conf = ConfigurationProvider.getProvider(YamlConfiguration.class).load(mappingFile);
-            return conf.getString("username");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public JSONObject getMappingForBedrock(String xuid) {
+        // TODO
+        return null;
     }
 
-    public void setMapping(String xuid, String username) throws Exception {
-        File mappingFile = new File(mappingsDir, xuid + ".mapping");
-        if (!mappingFile.exists()) mappingFile.delete();
-        Configuration conf = new Configuration();
-        conf.set("username", username);
-        ConfigurationProvider.getProvider(YamlConfiguration.class).save(conf, mappingFile);
+    public JSONObject getMappingForJava(UUID originalUUID) {
+        // TODO
+        return null;
     }
 }

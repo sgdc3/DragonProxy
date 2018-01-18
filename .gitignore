@@ -18,7 +18,7 @@ console.log
 dependency-reduced-pom.xml
 nb-configuration.xml
 *.iml
-/.idea
+.idea
 *.bat
 /config.yml
 /src/main/resources/buildNumber.properties
