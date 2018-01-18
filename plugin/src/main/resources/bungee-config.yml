@@ -1,4 +1,4 @@
-# DragonProxy Bukkit Addon
+# DragonProxy BungeeCord Addon
 # this is an optional plugin! not necessary for DragonProxy to work!
 
 # Enable Hybrid login for Java Edition and MCPE login?
@@ -20,6 +20,10 @@ hybrid-login:
   proxy-ips:
     - "127.0.0.1"
   # - "x.x.x.x"
+
+  service:
+    url: "http://127.0.0.1/hybrid"
+    key: "CHANGE_ME_RAWR"
 
   # hybrid mode authentication servers
   # used for creating hybrid accounts
