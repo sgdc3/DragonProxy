@@ -187,8 +187,8 @@ public class DragonProxy {
         logger.info(lang.get(Lang.INIT_MC_PC_SUPPORT, MinecraftConstants.GAME_VERSION));
         logger.info(lang.get(Lang.INIT_MC_PE_SUPPORT, ProtocolInfo.MINECRAFT_VERSION));
         authMode = config.mode.toLowerCase();
-        if (!authMode.equals("cls") && !authMode.equals("online") && !authMode.equals("offline"))
-            logger.severe("Invalid login 'mode' option detected, must be cls/online/offline. You set it to '" + authMode
+        if (!authMode.equals("hybrid") && !authMode.equals("online") && !authMode.equals("offline"))
+            logger.severe("Invalid login 'mode' option detected, must be online/offline/hybrid. You set it to '" + authMode
                 + "'! ");
 
         // Init metrics (https://bstats.org/plugin/server-implementation/DragonProxy)
