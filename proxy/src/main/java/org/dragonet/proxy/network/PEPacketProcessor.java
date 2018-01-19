@@ -19,11 +19,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import com.github.steveice10.packetlib.packet.Packet;
+import org.dragonet.common.gui.*;
 import org.dragonet.protocol.packets.*;
 import org.dragonet.proxy.configuration.Lang;
-import org.dragonet.common.gui.CustomFormComponent;
-import org.dragonet.common.gui.InputComponent;
-import org.dragonet.common.gui.LabelComponent;
 import org.dragonet.common.utilities.BinaryStream;
 import org.json.JSONArray;
 
@@ -122,6 +120,29 @@ public class PEPacketProcessor {
                 this.client.authenticate(array.get(2).toString(), array.get(3).toString());
                 return;
             }
+
+            // drop other packets
+            return;
+        }
+
+        if ("hybrid_step_1".equals(this.client.getDataCache().get(CacheKey.AUTHENTICATION_STATE))) {
+            if(MovePlayerPacket.class.isAssignableFrom(packet.getClass())) {
+                CustomFormComponent component = new CustomFormComponent("\u00a70\u00a7lCreate/Merge Account");
+                component.addComponent(new LabelComponent("\u00a76\u00a7lHello! \u00a7fThis server uses hybrid mode authentication, you can merge with your Mojang(Minecraft: Java Edition) account or create a new one with your xbox account. "));
+                component.addComponent(new DropDownComponent("How would you like to create your account? ", Arrays.asList("create a new one", "merge with Mojang account")));
+
+                ModalFormRequestPacket req = new ModalFormRequestPacket();
+                req.formId = 0xf0f0;
+                req.formData = component.serializeToJson().toString();
+                client.sendPacket(req);
+            }
+
+            if(ModalFormResponsePacket.class.isAssignableFrom(packet.getClass()) && ((ModalFormResponsePacket)packet).formId == 0xf0f0) {
+
+            }
+
+
+            return;
         }
 
         switch (packet.pid()) {

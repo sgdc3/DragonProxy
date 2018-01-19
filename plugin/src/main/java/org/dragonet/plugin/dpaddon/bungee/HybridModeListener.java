@@ -10,6 +10,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.common.utilities.HybridAuth;
 import org.dragonet.common.utilities.ReflectionUtils;
 import org.dragonet.plugin.dpaddon.DPAddonBungee;
 import org.json.JSONObject;
@@ -47,7 +48,7 @@ public class HybridModeListener implements Listener {
                 Object handler = event.getConnection();
                 String xuid = ((String) ReflectionUtils.invoke(handler, "getExtraDataInHandshake", new Class[0], new Object[0])).replace("\0", "");
                 plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
-                verifiedPlayers.put(event.getConnection(), new ProxiedBedrockPlayer(plugin, event.getConnection(), xuid, getMappingForBedrock(xuid)));
+                verifiedPlayers.put(event.getConnection(), new ProxiedBedrockPlayer(plugin, event.getConnection(), xuid, HybridAuth.getMappingForBedrock(xuid)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -78,13 +79,14 @@ public class HybridModeListener implements Listener {
                 }
             } else {
                 // send to authentication server
-                event.getPlayer().setReconnectServer(plugin.getProxy().getServerInfo(plugin.getConfig().getString("hybrid-login.auth-servers.mcbe")));
+                event.getPlayer().disconnect(new TextComponent("Error! Please create your account via DragonProxy! "));
+                return;
             }
         } else {
             /* ==== Minecraft: Java Edition players ==== */
 
             UUID originalUniqueId = event.getPlayer().getUniqueId();
-            JSONObject hybridAccountInfo = getMappingForJava(originalUniqueId);
+            JSONObject hybridAccountInfo = HybridAuth.getMappingForJava(originalUniqueId);
             if(hybridAccountInfo != null) {
                 if(!updateBungeeCordPlayerInfo(event.getPlayer().getPendingConnection(), hybridAccountInfo)) {
                     event.getPlayer().disconnect(new TextComponent("Server error! (failed to update hybrid account mapping)"));
@@ -92,7 +94,7 @@ public class HybridModeListener implements Listener {
                 }
             } else {
                 // send to authentication server
-                event.getPlayer().setReconnectServer(plugin.getProxy().getServerInfo(plugin.getConfig().getString("hybrid-login.auth-servers.mcje")));
+                event.getPlayer().setReconnectServer(plugin.getProxy().getServerInfo(plugin.getConfig().getString("hybrid-login.java-edition-auth-server")));
             }
         }
     }
@@ -116,13 +118,5 @@ public class HybridModeListener implements Listener {
         verifiedPlayers.remove(e.getPlayer().getPendingConnection());
     }
 
-    public JSONObject getMappingForBedrock(String xuid) {
-        // TODO
-        return null;
-    }
 
-    public JSONObject getMappingForJava(UUID originalUUID) {
-        // TODO
-        return null;
-    }
 }

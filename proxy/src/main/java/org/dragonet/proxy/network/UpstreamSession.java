@@ -25,6 +25,7 @@ import com.google.gson.JsonParser;
 import net.marfgamer.jraknet.protocol.Reliability;
 import net.marfgamer.jraknet.session.RakNetClientSession;
 import org.dragonet.common.maths.Vector3F;
+import org.dragonet.common.utilities.*;
 import org.dragonet.proxy.DesktopServer;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
@@ -48,11 +49,8 @@ import org.dragonet.protocol.packets.TextPacket;
 import org.dragonet.protocol.packets.UpdateBlockPacket;
 import org.dragonet.protocol.type.chunk.ChunkData;
 import org.dragonet.protocol.type.chunk.Section;
-import org.dragonet.common.utilities.Binary;
 import org.dragonet.common.maths.BlockPosition;
-import org.dragonet.common.utilities.HTTP;
-import org.dragonet.common.utilities.LoginChainDecoder;
-import org.dragonet.common.utilities.Zlib;
+import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -346,7 +344,7 @@ public class UpstreamSession {
 
         loggedIn = true;
         proxy.getLogger().info(proxy.getLang().get(Lang.MESSAGE_CLIENT_CONNECTED, username, remoteAddress));
-        if (proxy.getAuthMode().equals("online")) {
+        if (proxy.getAuthMode().equalsIgnoreCase("online") || proxy.getAuthMode().equalsIgnoreCase("hybrid")) {
             proxy.getLogger().debug("Login online mode, sending placeholder datas");
             StartGamePacket pkStartGame = new StartGamePacket();
             pkStartGame.eid = 1L; // well we use 1 now
@@ -381,13 +379,41 @@ public class UpstreamSession {
             sendPacket(new FullChunkDataPacket(-1, 0, data.getBuffer()));
             sendPacket(new FullChunkDataPacket(-1, -1, data.getBuffer()));
 
-            dataCache.put(CacheKey.AUTHENTICATION_STATE, "online_login_wait");
+            if(proxy.getAuthMode().equalsIgnoreCase("online")) {
+                // online mode authentication
+                dataCache.put(CacheKey.AUTHENTICATION_STATE, "online_login_wait");
 
-            PlayStatusPacket pkStat = new PlayStatusPacket();
-            pkStat.status = PlayStatusPacket.PLAYER_SPAWN;
-            sendPacket(pkStat, true);
+                PlayStatusPacket pkStat = new PlayStatusPacket();
+                pkStat.status = PlayStatusPacket.PLAYER_SPAWN;
+                sendPacket(pkStat, true);
 
-            sendChat(proxy.getLang().get(Lang.MESSAGE_LOGIN_PROMPT));
+                sendChat(proxy.getLang().get(Lang.MESSAGE_LOGIN_PROMPT));
+            } else {
+                // hybrid mode authentication
+                JSONObject mapping = HybridAuth.getMappingForBedrock(profile.xuid);
+                if(mapping == null) {
+                    disconnect("Server error! ");
+                    return;
+                }
+                if(mapping.getBoolean("found")) {
+                    // is mapped
+                    username = mapping.getString("username");
+                    protocol = new MinecraftProtocol(username);
+                    proxy.getLogger().debug("Initially joining [" + proxy.getConfig().default_server + "]... ");
+                    connectToServer(proxy.getConfig().remote_servers.get(proxy.getConfig().default_server));
+                } else {
+                    /*
+                     * hybrid login steps
+                     * - step 1: send welcome message and two buttons, merge or create
+                     * - merge: enter code
+                     * - create: enter username
+                     */
+                    // TODO: I18N
+                    dataCache.put(CacheKey.AUTHENTICATION_STATE, "hybrid_step_1");
+                    sendChat("Welcome! ");
+                    sendChat("Move a bit to create your account! ");
+                }
+            }
         } else if (proxy.getAuthMode().equals("cls")) {
             // CLS LOGIN!
             if ((username.length() < 6 + 1 + 1) || (!username.contains("_"))) {

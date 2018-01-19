@@ -27,6 +27,4 @@ hybrid-login:
 
   # hybrid mode authentication servers
   # used for creating hybrid accounts
-  auth-servers:
-    mcje: "auth-mcje"
-    mcbe: "auth-mcbe"
+  java-edition-auth-server: "auth-mcje"

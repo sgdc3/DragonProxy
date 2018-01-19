@@ -24,6 +24,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.common.utilities.HybridAuth;
 import org.dragonet.plugin.dpaddon.bungee.HybridModeListener;
 
 import java.io.File;
@@ -71,6 +72,9 @@ public class DPAddonBungee extends Plugin implements Listener {
 
         if(config.getBoolean("enable-hybrid-login")) {
             getLogger().info("Beep! Enabling hybrid login for Mojang and xbox accounts... ");
+            HybridAuth.setUrl(config.getString("hybrid-auth.service.url"));
+            HybridAuth.setKey(config.getString("hybrid-auth.service.key"));
+
             hybridModeListener = new HybridModeListener(this);
             getProxy().getPluginManager().registerListener(this, hybridModeListener);
             new File(getDataFolder(), "mappings").mkdirs();
