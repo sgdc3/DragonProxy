@@ -1,5 +1,6 @@
 package org.dragonet.plugin.dpaddon.bungee;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -8,8 +9,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.dragonet.common.utilities.ReflectionUtils;
 import org.dragonet.plugin.dpaddon.DPAddonBungee;
-import org.json.JSONObject;
 
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -19,7 +20,7 @@ public class HybridLoginListener implements Listener {
 
     private final Set<String> ips;
 
-    private final Map<PendingConnection, String> verifiedPlayers = new HashMap<>();
+    private final Map<InetSocketAddress, String> verifiedPlayers = new HashMap<>();
 
     public HybridLoginListener(DPAddonBungee plugin) {
         this.plugin = plugin;
@@ -29,34 +30,43 @@ public class HybridLoginListener implements Listener {
 
     @EventHandler
     public void onHandshake(PlayerHandshakeEvent e) {
-        plugin.getLogger().info("HANDSHAKE HOST=" + e.getHandshake().getHost());
         String addr = e.getConnection().getAddress().getAddress().getHostAddress();
+        System.out.println("ADDR = " + addr);
         if (!ips.contains(addr)) return;
-        String[] args = e.getHandshake().getHost().split(":");
-        String xuid = args[0];
-        String host = args[1];
-        e.getHandshake().setHost(host);
-        plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
-        //e.getConnection().setOnlineMode(false);
-        verifiedPlayers.put(e.getConnection(), xuid);
+        if(BungeeCord.InitialHandler.isAssignableFrom(e.getConnection().getClass())) {
+            try {
+                plugin.getLogger().info("HANDSHAKE HOST=" + e.getHandshake().getHost());
+                Object handler = e.getConnection();
+                String xuid = ((String) ReflectionUtils.invoke(handler, "getExtraDataInHandshake", new Class[0], new Object[0])).replace("\0", "");
+                plugin.getLogger().info("Detected DragonProxy connection! XUID: " + xuid);
+                verifiedPlayers.put(e.getConnection().getAddress(), xuid);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @EventHandler
     public void onPreLogin(PreLoginEvent e) {
-        if(verifiedPlayers.containsKey(e.getConnection())) {
+        if(verifiedPlayers.containsKey(e.getConnection().getAddress())) {
             e.getConnection().setOnlineMode(false);
         }
     }
 
     @EventHandler
     public void onPostLogin(PostLoginEvent e) {
-        if(verifiedPlayers.containsKey(e.getPlayer().getPendingConnection())) {
+        boolean success;
+        if(verifiedPlayers.containsKey(e.getPlayer().getPendingConnection().getAddress())) {
             // MCBE
-            updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getPendingConnection().getName() + "B",
-                UUID.nameUUIDFromBytes(("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getPlayer().getPendingConnection())).getBytes(StandardCharsets.UTF_8)));
+            success = updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getName() + "B",
+                UUID.nameUUIDFromBytes(("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getPlayer().getPendingConnection().getAddress())).getBytes(StandardCharsets.UTF_8)));
+            verifiedPlayers.remove(e.getPlayer().getPendingConnection().getAddress());
         } else {
             // MCJE
-            updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getPendingConnection().getName() + "J", e.getPlayer().getUniqueId());
+            success = updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getName() + "J", e.getPlayer().getUniqueId());
+        }
+        if(!success) {
+            e.getPlayer().disconnect(new TextComponent("Failed to apply hybrid authentications! "));
         }
     }
 
