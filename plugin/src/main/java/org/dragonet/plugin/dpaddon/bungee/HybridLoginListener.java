@@ -2,6 +2,7 @@ package org.dragonet.plugin.dpaddon.bungee;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.PendingConnection;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
@@ -58,20 +59,23 @@ public class HybridLoginListener implements Listener {
         boolean success;
         if(verifiedPlayers.containsKey(e.getPlayer().getPendingConnection().getAddress())) {
             // MCBE
-            success = updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getName() + "B",
+            success = updateBungeeCordPlayerInfo(e.getPlayer(), e.getPlayer().getName() + "B",
                 UUID.nameUUIDFromBytes(("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getPlayer().getPendingConnection().getAddress())).getBytes(StandardCharsets.UTF_8)));
             verifiedPlayers.remove(e.getPlayer().getPendingConnection().getAddress());
         } else {
             // MCJE
-            success = updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getName() + "J", e.getPlayer().getUniqueId());
+            success = updateBungeeCordPlayerInfo(e.getPlayer(), e.getPlayer().getName() + "J", e.getPlayer().getUniqueId());
         }
         if(!success) {
             e.getPlayer().disconnect(new TextComponent("Failed to apply hybrid authentications! "));
         }
     }
 
-    private boolean updateBungeeCordPlayerInfo(PendingConnection connection, String username, UUID uuid) {
+    private boolean updateBungeeCordPlayerInfo(ProxiedPlayer player, String username, UUID uuid) {
         try {
+            ReflectionUtils.setFieldValue(player, "name", username);
+
+            PendingConnection connection = player.getPendingConnection();
             Object loginRequest = ReflectionUtils.getFieldValue(connection, "loginRequest");
             ReflectionUtils.setFieldValue(loginRequest, "data", username);
             ReflectionUtils.setFieldValue(connection, "name", username);
