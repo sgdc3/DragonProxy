@@ -6,11 +6,9 @@
 # 1. This means desktop/MCJE players can use Mojang accounts,
 # while Bedrock/MCPE players can use xbox accounts.
 #
-# 2. Mojang account usernames and xbox usernames can be the
-# same for some players so make sure your plugins support
-# UUID OR IT MIGHT CAUSE SECURITY PROBLEMS!
+# 2. MCJE accounts will have a "J" suffix, and MCBE accounts will have a "B" suffix
 #
-# 3. You have to set DragonProxy to hybrid mode as well!
+# 3. You have to set DragonProxy to OFFLINE MODE and enable XBOX LOGIN!!
 #
 enable-hybrid-login: false
 

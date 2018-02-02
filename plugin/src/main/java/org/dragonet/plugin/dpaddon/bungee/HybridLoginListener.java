@@ -2,10 +2,13 @@ package org.dragonet.plugin.dpaddon.bungee;
 
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import org.dragonet.common.utilities.ReflectionUtils;
 import org.dragonet.plugin.dpaddon.DPAddonBungee;
+import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -42,10 +45,32 @@ public class HybridLoginListener implements Listener {
     public void onPreLogin(PreLoginEvent e) {
         if(verifiedPlayers.containsKey(e.getConnection())) {
             e.getConnection().setOnlineMode(false);
-            e.getConnection().setUniqueId(UUID.nameUUIDFromBytes(
-                ("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getConnection())).getBytes(StandardCharsets.UTF_8)
-            ));
-            verifiedPlayers.remove(e.getConnection());
         }
     }
+
+    @EventHandler
+    public void onPostLogin(PostLoginEvent e) {
+        if(verifiedPlayers.containsKey(e.getPlayer().getPendingConnection())) {
+            // MCBE
+            updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getPendingConnection().getName() + "B",
+                UUID.nameUUIDFromBytes(("BedrockPlayer:XUID:" + verifiedPlayers.get(e.getPlayer().getPendingConnection())).getBytes(StandardCharsets.UTF_8)));
+        } else {
+            // MCJE
+            updateBungeeCordPlayerInfo(e.getPlayer().getPendingConnection(), e.getPlayer().getPendingConnection().getName() + "J", e.getPlayer().getUniqueId());
+        }
+    }
+
+    private boolean updateBungeeCordPlayerInfo(PendingConnection connection, String username, UUID uuid) {
+        try {
+            Object loginRequest = ReflectionUtils.getFieldValue(connection, "loginRequest");
+            ReflectionUtils.setFieldValue(loginRequest, "data", username);
+            ReflectionUtils.setFieldValue(connection, "name", username);
+            ReflectionUtils.setFieldValue(connection, "uniqueId", uuid);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
