@@ -13,7 +13,10 @@
 package org.dragonet.proxy.network;
 
 import com.github.steveice10.packetlib.packet.Packet;
+
+import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
+import org.dragonet.proxy.configuration.ServerConfig;
 import org.dragonet.proxy.gui.CustomFormComponent;
 import org.dragonet.proxy.gui.InputComponent;
 import org.dragonet.proxy.gui.LabelComponent;
@@ -23,6 +26,8 @@ import org.dragonet.proxy.protocol.ProtocolInfo;
 import org.dragonet.proxy.protocol.packets.*;
 import org.json.JSONArray;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -32,8 +37,23 @@ public class PEPacketProcessor implements Runnable {
 
     private final UpstreamSession client;
     private final Deque<byte[]> packets = new ArrayDeque<>();
+    
+    private Proxy authProxy = null;
 
     public PEPacketProcessor(UpstreamSession client) {
+    	ServerConfig config = DragonProxy.getInstance().getConfig();
+    	
+    	if (config.proxy_type.equalsIgnoreCase("none") || config.proxy_type.equalsIgnoreCase("direct")) {
+    		authProxy = null;
+    	} else {
+    		Proxy.Type type = Proxy.Type.valueOf(config.proxy_type.toUpperCase());
+    		if (type != null) {
+    			authProxy = new Proxy(type, new InetSocketAddress(config.proxy_ip, config.proxy_port));
+    		} else {
+    			authProxy = null;
+    		}
+    	}
+    	
         this.client = client;
     }
 
@@ -93,7 +113,7 @@ public class PEPacketProcessor implements Runnable {
 
                 ModalFormResponsePacket formResponse = (ModalFormResponsePacket) packet;
                 JSONArray array = new JSONArray(formResponse.formData);
-                this.client.authenticate(array.get(2).toString(), array.get(3).toString());
+                this.client.authenticate(array.get(2).toString(), array.get(3).toString(), authProxy);
                 return;
             }
         }

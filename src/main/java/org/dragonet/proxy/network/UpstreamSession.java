@@ -51,6 +51,7 @@ import org.dragonet.proxy.utilities.Vector3F;
 import org.dragonet.proxy.utilities.Zlib;
 
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -266,11 +267,16 @@ public class UpstreamSession {
         packetProcessorScheule.cancel(true);
     }
 
-    public void authenticate(String email, String password) {
+    public void authenticate(String email, String password, Proxy authProxy) {
         proxy.getGeneralThreadPool().execute(() -> {
             try {
-                protocol = new MinecraftProtocol(email, password, false);
+            	if (authProxy == null) {
+            		protocol = new MinecraftProtocol(email, password, false, Proxy.NO_PROXY);
+            	} else {
+            		protocol = new MinecraftProtocol(email, password, false, authProxy);
+            	}
             } catch (RequestException ex) {
+            	ex.printStackTrace();
                 if (ex.getMessage().toLowerCase().contains("invalid")) {
                     sendChat(proxy.getLang().get(Lang.MESSAGE_ONLINE_LOGIN_FAILD));
                     disconnect(proxy.getLang().get(Lang.MESSAGE_ONLINE_LOGIN_FAILD));
