@@ -6,8 +6,8 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view the LICENCE file for details. 
+ * You can view the LICENSE file for details.
  *
- * @author Dragonet Foundation
- * @link https://github.com/DragonetMC/DragonProxy
+ * @author ${owner}
+ * @link ${link}
  */

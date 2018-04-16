@@ -13,6 +13,12 @@
     <artifactId>dragonproxy-plugin</artifactId>
     <packaging>pom</packaging>
 
+    <name>DragonProxy Plugin</name>
+    <description>
+        The addon plugins for the DragonProxy project, a proxy that allows Minecraft: Bedrock clients to
+        connect to Minecraft: Java Edition servers.
+    </description>
+
     <modules>
         <module>spigot</module>
         <module>bungee</module>
