@@ -20,7 +20,6 @@ import java.util.Deque;
 
 import com.github.steveice10.packetlib.packet.Packet;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParseException;
 import org.dragonet.common.utilities.JsonUtil;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -39,7 +38,7 @@ import org.dragonet.protocol.Protocol;
 
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.ServerConfig;
-import org.dragonet.proxy.events.defaults.packets.PacketfromPlayerEvent;
+import org.dragonet.api.event.builtin.packet.PacketFromPlayerEvent;
 
 public class PEPacketProcessor {
 
@@ -116,7 +115,7 @@ public class PEPacketProcessor {
             return;
 
         if(!client.getProxy().getConfig().disable_packet_events){
-            PacketfromPlayerEvent packetEvent = new PacketfromPlayerEvent(client, packet);
+            PacketFromPlayerEvent packetEvent = new PacketFromPlayerEvent(client, packet);
             client.getProxy().getEventManager().callEvent(packetEvent);
             if(packetEvent.isCancelled()){
                 return;

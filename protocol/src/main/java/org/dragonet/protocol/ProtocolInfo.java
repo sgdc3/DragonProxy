@@ -1,11 +1,11 @@
 package org.dragonet.protocol;
 
 /**
- * Class from PMMP project translated to Java
- *
- * @author PMMP Created on 2017/10/21.
+ * A class containing protocol specifications.
+ * Class from PocketMineMP project translated to Java.
  */
-public class ProtocolInfo {
+@SuppressWarnings({"unused", "WeakerAccess"})
+public final class ProtocolInfo {
 
     /**
      * Actual Minecraft: PE protocol version
@@ -127,4 +127,9 @@ public class ProtocolInfo {
     public static final byte SHOW_PROFILE_PACKET = (byte) 0x68;
     public static final byte SET_DEFAULT_GAME_TYPE_PACKET = (byte) 0x69;
     public static final byte BATCH_PACKET = (byte) 0xff;
+
+    // Utility class
+    private ProtocolInfo() {
+    }
+
 }

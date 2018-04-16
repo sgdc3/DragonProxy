@@ -6,19 +6,17 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.protocol.type.transaction;
 
 import org.dragonet.common.data.inventory.Slot;
-import org.dragonet.protocol.packets.InventoryTransactionPacket;
 import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.packets.InventoryTransactionPacket;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class InventoryTransactionAction {
 
     public static final int SOURCE_CONTAINER = 0;
@@ -99,7 +97,7 @@ public class InventoryTransactionAction {
                 switch (action.containerId) {
                     case SOURCE_TYPE_CRAFTING_USE_INGREDIENT:
                     case SOURCE_TYPE_CRAFTING_RESULT:
-//				packet.craftingPart = true;
+                        //packet.craftingPart = true;
                         break;
                 }
                 break;

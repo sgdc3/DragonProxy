@@ -21,4 +21,5 @@ public class SlotChangeAction extends InventoryAction {
     public int getSlot() {
         return inventorySlot;
     }
+
 }

@@ -6,25 +6,27 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
-package org.dragonet.proxy.network;
+package org.dragonet.api.network;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public interface IDownstreamSession<PACKET> {
 
-    public void connect(String addr, int port);
+    void connect(String addr, int port);
 
-    public void disconnect();
+    void disconnect();
 
-    public boolean isConnected();
+    boolean isConnected();
 
-    public void send(PACKET packet);
+    void send(PACKET packet);
 
-    public void send(PACKET... packets);
+    void send(PACKET... packets);
 
-    public void sendChat(String chat);
+    void sendChat(String chat);
 
-    public void onTick();
+    void onTick();
+
 }

@@ -22,4 +22,5 @@ public interface InventoryTransaction {
     boolean execute();
 
     boolean hasExecuted();
+
 }

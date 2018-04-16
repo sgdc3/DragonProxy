@@ -1,8 +1,9 @@
-package org.dragonet.proxy.events.defaults.packets;
+package org.dragonet.api.event.builtin.packet;
 
 import org.dragonet.protocol.PEPacket;
-import org.dragonet.proxy.events.Event;
+import org.dragonet.api.event.Event;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class PEPacketEvent extends Event {
 
     private PEPacket packet;

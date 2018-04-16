@@ -21,14 +21,16 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.whirvis.jraknet.protocol.Reliability;
 import com.whirvis.jraknet.session.RakNetClientSession;
+import org.dragonet.api.network.IDownstreamSession;
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
-import org.dragonet.proxy.events.defaults.packets.PackettoPlayerEvent;
-import org.dragonet.proxy.events.defaults.player.PlayerAuthenticationEvent;
-import org.dragonet.proxy.events.defaults.player.PlayerKickEvent;
-import org.dragonet.proxy.events.defaults.player.PlayerLoginEvent;
-import org.dragonet.proxy.events.defaults.player.PlayerQuitEvent;
+import org.dragonet.api.event.builtin.packet.PacketToPlayerEvent;
+import org.dragonet.api.event.builtin.player.PlayerAuthenticationEvent;
+import org.dragonet.api.event.builtin.player.PlayerKickEvent;
+import org.dragonet.api.event.builtin.player.PlayerLoginEvent;
+import org.dragonet.api.event.builtin.player.PlayerQuitEvent;
 import org.dragonet.proxy.utilities.CLSAuthenticationService;
 
 import org.dragonet.common.data.entity.EntityType;
@@ -75,7 +77,7 @@ import org.dragonet.proxy.network.cache.ChunkCache;
  * Maintaince the connection between the proxy and Minecraft: Pocket Edition
  * clients.
  */
-public class UpstreamSession {
+public class DragonUpstreamSession implements UpstreamSession {
 
     private final DragonProxy proxy;
     private final String raknetID;
@@ -116,81 +118,99 @@ public class UpstreamSession {
         return proxy;
     }
 
+    @Override
     public String getRaknetID() {
         return raknetID;
     }
 
+    @Override
     public RakNetClientSession getRaknetClient() {
         return raknetClient;
     }
 
+    @Override
     public boolean isLoggedIn() {
         return loggedIn;
     }
 
+    @Override
     public boolean isSpawned() {
         return spawned;
     }
 
+    @Override
     public InetSocketAddress getRemoteAddress() {
         return remoteAddress;
     }
 
+    @Override
     public PEPacketProcessor getPacketProcessor() {
         return packetProcessor;
     }
 
+    @Override
     public LoginChainDecoder getProfile() {
         return profile;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public IDownstreamSession getDownstream() {
         return downstream;
     }
 
+    @Override
     public Map<String, Object> getDataCache() {
         return dataCache;
     }
 
+    @Override
     public Map<UUID, PlayerListEntry> getPlayerInfoCache() {
         return playerInfoCache;
     }
 
+    @Override
     public EntityCache getEntityCache() {
         return entityCache;
     }
 
+    @Override
     public WindowCache getWindowCache() {
         return windowCache;
     }
 
+    @Override
     public ChunkCache getChunkCache() {
         return chunkCache;
     }
 
+    @Override
     public MinecraftProtocol getProtocol() {
         return protocol;
     }
     
+    @Override
     public JukeboxCache getJukeboxCache() {
     	return jukeboxCache;
     }
 
+    @Override
     public void sendPacket(PEPacket packet) {
         sendPacket(packet, false);
     }
 
     //if sending a packer before spawn, you should set high_priority to true !
+    @Override
     public void sendPacket(PEPacket packet, boolean high_priority) {
         if (packet == null)
             return;
 
         if(!proxy.getConfig().disable_packet_events){
-            PackettoPlayerEvent packetEvent = new PackettoPlayerEvent(this, packet);
+            PacketToPlayerEvent packetEvent = new PacketToPlayerEvent(this, packet);
             proxy.getEventManager().callEvent(packetEvent);
             packet = packetEvent.getPacket();
         }
@@ -220,6 +240,7 @@ public class UpstreamSession {
         }
     }
 
+    @Override
     public void sendAllPackets(PEPacket[] packets, boolean high_priority) {
         if (packets.length < 5 || true) //<- this disable batched packets
             for (PEPacket packet : packets)
@@ -237,6 +258,7 @@ public class UpstreamSession {
         }
     }
 
+    @Override
     public void connectToServer(String address, int port) {
         if (address == null)
             return;
@@ -251,6 +273,7 @@ public class UpstreamSession {
         downstream.connect(address, port);
     }
 
+    @Override
     public void onConnected() {
         connecting = false;
     }
@@ -260,6 +283,7 @@ public class UpstreamSession {
      *
      * @param reason
      */
+    @Override
     public void disconnect(String reason) {
         PlayerKickEvent kickEvent = new PlayerKickEvent(this);
         proxy.getEventManager().callEvent(kickEvent);
@@ -275,6 +299,7 @@ public class UpstreamSession {
      *
      * @param reason The reason of disconnection.
      */
+    @Override
     public void onDisconnect(String reason) {
         PlayerQuitEvent playerQuit = new PlayerQuitEvent(this);
         proxy.getEventManager().callEvent(playerQuit);
@@ -287,6 +312,7 @@ public class UpstreamSession {
         getChunkCache().purge();
     }
 
+    @Override
     public void authenticate(String email, String password, Proxy authProxy) {
         proxy.getGeneralThreadPool().execute(() -> {
             try {
@@ -319,6 +345,7 @@ public class UpstreamSession {
         });
     }
 
+    @Override
     public void onLogin(LoginPacket packet) {
         if (username != null) {
             disconnect("Already logged in, this must be an error! ");
@@ -361,6 +388,7 @@ public class UpstreamSession {
         // now wait for response
     }
 
+    @Override
     public void postLogin() {
         sendPacket(new ResourcePackStackPacket(), true);
 
@@ -453,6 +481,7 @@ public class UpstreamSession {
         }
     }
 
+    @Override
     public void setSpawned() {
         if (!spawned) {
             spawned = true;
@@ -461,6 +490,7 @@ public class UpstreamSession {
         }
     }
 
+    @Override
     public void sendChat(String chat) {
         if (chat.contains("\n")) {
             String[] lines = chat.split("\n");
@@ -474,6 +504,7 @@ public class UpstreamSession {
         sendPacket(text, true);
     }
 
+    @Override
     public void sendFakeBlock(int x, int y, int z, int id, int meta) {
         UpdateBlockPacket pkBlock = new UpdateBlockPacket();
         pkBlock.id = id;
@@ -483,6 +514,7 @@ public class UpstreamSession {
         sendPacket(pkBlock);
     }
 
+    @Override
     public void sendCreativeInventory() {
         // main inventory
 //        ContainerId.CREATIVE.getId();
@@ -512,10 +544,12 @@ public class UpstreamSession {
         sendPacket(inventoryContentPacket3);
     }
 
+    @Override
     public void handlePacketBinary(byte[] packet) {
         packetProcessor.putPacket(packet);
     }
 
+    @Override
     public void putCachePacket(PEPacket packet) {
         if (packet == null)
             return;
@@ -527,6 +561,7 @@ public class UpstreamSession {
         cachedPackets.offer(packet);
     }
 
+    @Override
     public void onTick() {
         entityCache.onTick();
         chunkCache.onTick();

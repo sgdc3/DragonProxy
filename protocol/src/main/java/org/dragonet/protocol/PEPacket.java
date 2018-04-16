@@ -2,9 +2,7 @@ package org.dragonet.protocol;
 
 import org.dragonet.common.utilities.BinaryStream;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class PEPacket extends BinaryStream {
 
     private boolean encoded;

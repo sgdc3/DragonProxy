@@ -28,7 +28,7 @@ import org.dragonet.proxy.commands.CommandRegister;
 import org.dragonet.proxy.commands.ConsoleCommandReader;
 import org.dragonet.proxy.configuration.Lang;
 import org.dragonet.proxy.configuration.ServerConfig;
-import org.dragonet.proxy.events.EventManager;
+import org.dragonet.api.event.EventManager;
 import org.dragonet.proxy.network.RaknetInterface;
 import org.dragonet.proxy.network.SessionRegister;
 import org.dragonet.proxy.network.translator.SoundTranslator;
@@ -44,9 +44,10 @@ import co.aikar.timings.Timings;
 import org.apache.commons.lang3.SystemUtils;
 import org.dragonet.common.utilities.SkinFetcher;
 
-public class DragonProxy {
+public class DragonProxy implements org.dragonet.api.Proxy {
 
-    public static final boolean IS_RELEASE = false; // TODO: remove
+    // TODO: remove, use maven version to detect SNAPSHOT builds
+    private static final boolean IS_RELEASE = false;
 
     private static DragonProxy instance;
     private static String[] launchArgs;
@@ -77,8 +78,9 @@ public class DragonProxy {
     }
 
     public static DragonProxy getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new DragonProxy();
+        }
         return instance;
     }
 

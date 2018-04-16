@@ -12,4 +12,5 @@ public class ReleaseItemData implements TransactionData {
     public int hotbarSlot;
     public Slot itemInHand;
     public Vector3F headRot;
+
 }

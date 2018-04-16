@@ -1,5 +1,9 @@
 package org.dragonet.protocol;
 
+/**
+ * A wrapper for PEPacket.
+ */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class WrappedPEPacket extends PEPacket {
 
     public WrappedPEPacket(byte[] buffer) {
@@ -27,4 +31,5 @@ public class WrappedPEPacket extends PEPacket {
     public boolean isEncoded() {
         return true;
     }
+
 }

@@ -25,6 +25,7 @@ import com.github.steveice10.packetlib.event.session.PacketSendingEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import org.dragonet.api.network.IDownstreamSession;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
