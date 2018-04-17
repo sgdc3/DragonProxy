@@ -3,11 +3,11 @@ package org.dragonet.proxy.network.translator.pe;
 import org.dragonet.protocol.packets.EntityEventPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 
 import com.github.steveice10.packetlib.packet.Packet;
 
-public class PEEntityEventPacketTranslator implements IPEPacketTranslator<EntityEventPacket> {
+public class PEEntityEventPacketTranslator implements PEPacketTranslator<EntityEventPacket> {
 
     @Override
     public Packet[] translate(UpstreamSession session, EntityEventPacket packet) {

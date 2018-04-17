@@ -14,6 +14,7 @@ package org.dragonet.proxy.network.translator;
 
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.data.entity.meta.type.ByteMeta;
 import org.dragonet.common.data.entity.meta.type.ByteArrayMeta;
 import org.dragonet.common.data.entity.meta.type.FloatMeta;

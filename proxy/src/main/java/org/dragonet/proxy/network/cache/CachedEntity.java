@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.data.entity.EntityType;
 import org.dragonet.common.maths.AxisAlignedBB;
 import org.dragonet.common.maths.Vector3F;

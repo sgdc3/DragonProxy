@@ -24,13 +24,13 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.EntityMetaTranslator;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.SetEntityDataPacket;
 import org.dragonet.protocol.packets.SetEntityLinkPacket;
 
 
-public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator<ServerEntitySetPassengersPacket> {
+public class PCEntitySetPassengerPacketTranslator implements PCPacketTranslator<ServerEntitySetPassengersPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerEntitySetPassengersPacket packet) {
 

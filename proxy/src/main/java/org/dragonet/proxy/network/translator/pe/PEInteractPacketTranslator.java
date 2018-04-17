@@ -16,13 +16,13 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.InteractAction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerInteractEntityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.protocol.packets.InteractPacket;
 
-public class PEInteractPacketTranslator implements IPEPacketTranslator<InteractPacket> {
+public class PEInteractPacketTranslator implements PEPacketTranslator<InteractPacket> {
 
     public Packet[] translate(UpstreamSession session, InteractPacket packet) {
 

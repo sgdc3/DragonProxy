@@ -17,7 +17,7 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
 
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
 import org.dragonet.common.data.itemsblocks.ItemEntry;
 import org.dragonet.protocol.PEPacket;
@@ -25,7 +25,7 @@ import org.dragonet.protocol.packets.UpdateBlockPacket;
 import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.ChunkPos;
 
-public class PCMultiBlockChangePacketTranslator implements IPCPacketTranslator<ServerMultiBlockChangePacket> {
+public class PCMultiBlockChangePacketTranslator implements PCPacketTranslator<ServerMultiBlockChangePacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerMultiBlockChangePacket packet) {
         UpdateBlockPacket[] packets = new UpdateBlockPacket[packet.getRecords().length];

@@ -14,10 +14,10 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.LevelSoundEventPacket;
 
-public class PESoundEventPacketTranslator implements IPEPacketTranslator<LevelSoundEventPacket> {
+public class PESoundEventPacketTranslator implements PEPacketTranslator<LevelSoundEventPacket> {
 
     public Packet[] translate(UpstreamSession session, LevelSoundEventPacket packet) {
 //        System.out.println("LevelSoundEventPacket" + DebugTools.getAllFields(packet));

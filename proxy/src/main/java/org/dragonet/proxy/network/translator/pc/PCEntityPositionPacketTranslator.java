@@ -17,12 +17,12 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.MoveEntityPacket;
 
 
-public class PCEntityPositionPacketTranslator implements IPCPacketTranslator<ServerEntityPositionPacket> {
+public class PCEntityPositionPacketTranslator implements PCPacketTranslator<ServerEntityPositionPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerEntityPositionPacket packet) {
 

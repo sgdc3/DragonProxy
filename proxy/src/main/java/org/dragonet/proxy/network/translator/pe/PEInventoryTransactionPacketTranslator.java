@@ -12,7 +12,6 @@
  */
 package org.dragonet.proxy.network.translator.pe;
 
-import org.dragonet.common.data.entity.EntityType;
 import org.dragonet.common.data.inventory.ContainerId;
 import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.maths.BlockPosition;
@@ -25,9 +24,8 @@ import org.dragonet.protocol.type.transaction.data.UseItemOnEntityData;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
-import org.dragonet.proxy.utilities.DebugTools;
 
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -48,7 +46,7 @@ import com.github.steveice10.packetlib.packet.Packet;
 /**
  * Created on 2017/12/3.
  */
-public class PEInventoryTransactionPacketTranslator implements IPEPacketTranslator<InventoryTransactionPacket> {
+public class PEInventoryTransactionPacketTranslator implements PEPacketTranslator<InventoryTransactionPacket> {
 
     @Override
     public Packet[] translate(UpstreamSession session, InventoryTransactionPacket packet) {

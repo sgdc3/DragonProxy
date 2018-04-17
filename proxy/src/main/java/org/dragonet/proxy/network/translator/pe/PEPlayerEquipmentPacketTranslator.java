@@ -15,11 +15,11 @@ package org.dragonet.proxy.network.translator.pe;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.MobEquipmentPacket;
 import org.dragonet.proxy.network.CacheKey;
 
-public class PEPlayerEquipmentPacketTranslator implements IPEPacketTranslator<MobEquipmentPacket> {
+public class PEPlayerEquipmentPacketTranslator implements PEPacketTranslator<MobEquipmentPacket> {
 
     public Packet[] translate(UpstreamSession session, MobEquipmentPacket packet) {
 //		System.out.println(org.dragonet.proxy.utilities.DebugTools.getAllFields(packet));

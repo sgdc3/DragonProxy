@@ -12,18 +12,20 @@
  */
 package org.dragonet.api.network;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-public interface IDownstreamSession<PACKET> {
+import com.github.steveice10.mc.protocol.packet.MinecraftPacket;
 
-    void connect(String addr, int port);
+@SuppressWarnings({"unused", "WeakerAccess"})
+public interface DownstreamSession {
+
+    void connect(String address, int port);
 
     void disconnect();
 
     boolean isConnected();
 
-    void send(PACKET packet);
+    void send(MinecraftPacket packet);
 
-    void send(PACKET... packets);
+    void send(MinecraftPacket... packets);
 
     void sendChat(String chat);
 

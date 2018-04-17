@@ -9,7 +9,7 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.LevelEventPacket;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
 import org.dragonet.proxy.network.translator.ParticleTranslator;
 
@@ -17,7 +17,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.Particle;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerSpawnParticlePacket;
 
-public class PCSpawnParticlePacketTranslator implements IPCPacketTranslator<ServerSpawnParticlePacket> {
+public class PCSpawnParticlePacketTranslator implements PCPacketTranslator<ServerSpawnParticlePacket> {
 
     @Override
     public PEPacket[] translate(UpstreamSession session, ServerSpawnParticlePacket packet) {

@@ -15,10 +15,10 @@ package org.dragonet.proxy.network.translator.pc;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
 
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 
-public class PCUnloadChunkDataPacketTranslator implements IPCPacketTranslator<ServerUnloadChunkPacket> {
+public class PCUnloadChunkDataPacketTranslator implements PCPacketTranslator<ServerUnloadChunkPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerUnloadChunkPacket packet) {
         session.getChunkCache().remove(packet.getX(), packet.getZ());

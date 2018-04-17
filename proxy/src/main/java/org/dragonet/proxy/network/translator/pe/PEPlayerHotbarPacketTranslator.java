@@ -14,11 +14,10 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.PlayerHotbarPacket;
-import org.dragonet.proxy.utilities.DebugTools;
 
-public class PEPlayerHotbarPacketTranslator implements IPEPacketTranslator<PlayerHotbarPacket> {
+public class PEPlayerHotbarPacketTranslator implements PEPacketTranslator<PlayerHotbarPacket> {
 
     public Packet[] translate(UpstreamSession session, PlayerHotbarPacket packet) {
 //        System.out.println("PlayerHotbarPacket" + DebugTools.getAllFields(packet));

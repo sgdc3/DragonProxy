@@ -13,11 +13,11 @@
 package org.dragonet.proxy.network.translator.pc;
 
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerVehicleMovePacket;
 import org.dragonet.protocol.PEPacket;
 
-public class PCVehicleMovePacketTranslator implements IPCPacketTranslator<ServerVehicleMovePacket> {
+public class PCVehicleMovePacketTranslator implements PCPacketTranslator<ServerVehicleMovePacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerVehicleMovePacket packet) {
 //        System.out.println(DebugTools.getAllFields(packet));

@@ -15,11 +15,11 @@ package org.dragonet.proxy.network.translator.pc;
 import org.dragonet.proxy.network.InventoryTranslatorRegister;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedWindow;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import org.dragonet.protocol.PEPacket;
 
-public class PCWindowItemsTranslator implements IPCPacketTranslator<ServerWindowItemsPacket> {
+public class PCWindowItemsTranslator implements PCPacketTranslator<ServerWindowItemsPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerWindowItemsPacket packet) {
         if (!session.getWindowCache().hasWindow(packet.getWindowId())) {

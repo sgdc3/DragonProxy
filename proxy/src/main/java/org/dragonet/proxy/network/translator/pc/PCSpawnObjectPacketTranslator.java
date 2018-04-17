@@ -14,11 +14,11 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import org.dragonet.protocol.PEPacket;
 
-public class PCSpawnObjectPacketTranslator implements IPCPacketTranslator<ServerSpawnObjectPacket> {
+public class PCSpawnObjectPacketTranslator implements PCPacketTranslator<ServerSpawnObjectPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerSpawnObjectPacket packet) {
         if (!packet.getType().equals(ObjectType.ITEM_FRAME))

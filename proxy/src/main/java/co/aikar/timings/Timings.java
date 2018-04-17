@@ -31,8 +31,8 @@ import java.util.Set;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.commands.Command;
 import org.dragonet.protocol.PEPacket;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 
 public final class Timings {
     private static boolean timingsEnabled = false;
@@ -233,13 +233,13 @@ public final class Timings {
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + pk.getClass().getSimpleName(), playerNetworkSendTimer);
     }
 
-    public static Timing getPcPacketTranslatorTiming(IPCPacketTranslator translator) {
+    public static Timing getPcPacketTranslatorTiming(PCPacketTranslator translator) {
         if (!isTimingsEnabled()) return pcPacketTranslatorTimer;
         if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getPcPacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + translator.getClass().getSimpleName(), pcPacketTranslatorTimer);
     }
 
-    public static Timing getPePacketTranslatorTiming(IPEPacketTranslator translator) {
+    public static Timing getPePacketTranslatorTiming(PEPacketTranslator translator) {
         if (!isTimingsEnabled()) return pePacketTranslatorTimer;
         if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getPePacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + translator.getClass().getSimpleName(), pePacketTranslatorTimer);

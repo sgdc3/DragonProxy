@@ -21,57 +21,40 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.whirvis.jraknet.protocol.Reliability;
 import com.whirvis.jraknet.session.RakNetClientSession;
-import org.dragonet.api.network.IDownstreamSession;
-import org.dragonet.api.network.UpstreamSession;
-import org.dragonet.common.maths.Vector3F;
-import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.configuration.Lang;
 import org.dragonet.api.event.builtin.packet.PacketToPlayerEvent;
 import org.dragonet.api.event.builtin.player.PlayerAuthenticationEvent;
 import org.dragonet.api.event.builtin.player.PlayerKickEvent;
 import org.dragonet.api.event.builtin.player.PlayerLoginEvent;
 import org.dragonet.api.event.builtin.player.PlayerQuitEvent;
-import org.dragonet.proxy.utilities.CLSAuthenticationService;
-
+import org.dragonet.api.network.DownstreamSession;
+import org.dragonet.api.network.UpstreamSession;
+import org.dragonet.common.data.blocks.BlockEnum;
 import org.dragonet.common.data.entity.EntityType;
+import org.dragonet.common.data.inventory.ContainerId;
+import org.dragonet.common.data.inventory.Slot;
+import org.dragonet.common.maths.BlockPosition;
+import org.dragonet.common.maths.Vector3F;
+import org.dragonet.common.utilities.Binary;
+import org.dragonet.common.utilities.LoginChainDecoder;
+import org.dragonet.common.utilities.Zlib;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.ProtocolInfo;
+import org.dragonet.protocol.packets.*;
+import org.dragonet.protocol.type.chunk.ChunkData;
+import org.dragonet.protocol.type.chunk.Section;
+import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.configuration.Lang;
+import org.dragonet.proxy.network.cache.ChunkCache;
 import org.dragonet.proxy.network.cache.EntityCache;
 import org.dragonet.proxy.network.cache.JukeboxCache;
 import org.dragonet.proxy.network.cache.WindowCache;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.protocol.packets.DisconnectPacket;
-import org.dragonet.protocol.packets.FullChunkDataPacket;
-import org.dragonet.protocol.packets.LoginPacket;
-import org.dragonet.protocol.packets.PlayStatusPacket;
-import org.dragonet.protocol.packets.ResourcePackStackPacket;
-import org.dragonet.protocol.packets.ResourcePacksInfoPacket;
-import org.dragonet.protocol.packets.SetSpawnPositionPacket;
-import org.dragonet.protocol.packets.StartGamePacket;
-import org.dragonet.protocol.packets.TextPacket;
-import org.dragonet.protocol.packets.UpdateBlockPacket;
-import org.dragonet.protocol.type.chunk.ChunkData;
-import org.dragonet.protocol.type.chunk.Section;
-import org.dragonet.common.utilities.Binary;
-import org.dragonet.common.maths.BlockPosition;
-import org.dragonet.common.utilities.LoginChainDecoder;
-import org.dragonet.common.utilities.Zlib;
+import org.dragonet.proxy.utilities.CLSAuthenticationService;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.Deflater;
-import org.dragonet.common.data.blocks.BlockEnum;
-import org.dragonet.common.data.inventory.ContainerId;
-import org.dragonet.common.data.inventory.Slot;
-import org.dragonet.protocol.packets.BatchPacket;
-import org.dragonet.protocol.packets.InventoryContentPacket;
-import org.dragonet.proxy.network.cache.ChunkCache;
 
 /**
  * Maintaince the connection between the proxy and Minecraft: Pocket Edition
@@ -85,12 +68,12 @@ public class DragonUpstreamSession implements UpstreamSession {
     private boolean loggedIn = false;
     private boolean spawned = false;
     private boolean connecting = false;
-    private Queue<PEPacket> cachedPackets = new ConcurrentLinkedQueue();
+    private Queue<PEPacket> cachedPackets = new ConcurrentLinkedQueue<>();
     private final InetSocketAddress remoteAddress;
     private final PEPacketProcessor packetProcessor;
     private LoginChainDecoder profile;
     private String username;
-    private IDownstreamSession downstream;
+    private DownstreamSession downstream;
     private MinecraftProtocol protocol;
 
     /*
@@ -106,7 +89,7 @@ public class DragonUpstreamSession implements UpstreamSession {
     private final JukeboxCache jukeboxCache = new JukeboxCache();
 
     public UpstreamSession(DragonProxy proxy, String raknetID, RakNetClientSession raknetClient,
-            InetSocketAddress remoteAddress) {
+                           InetSocketAddress remoteAddress) {
         this.proxy = proxy;
         this.raknetID = raknetID;
         this.remoteAddress = remoteAddress;
@@ -118,12 +101,10 @@ public class DragonUpstreamSession implements UpstreamSession {
         return proxy;
     }
 
-    @Override
     public String getRaknetID() {
         return raknetID;
     }
 
-    @Override
     public RakNetClientSession getRaknetClient() {
         return raknetClient;
     }
@@ -143,7 +124,6 @@ public class DragonUpstreamSession implements UpstreamSession {
         return remoteAddress;
     }
 
-    @Override
     public PEPacketProcessor getPacketProcessor() {
         return packetProcessor;
     }
@@ -159,7 +139,7 @@ public class DragonUpstreamSession implements UpstreamSession {
     }
 
     @Override
-    public IDownstreamSession getDownstream() {
+    public DownstreamSession getDownstream() {
         return downstream;
     }
 
@@ -173,17 +153,14 @@ public class DragonUpstreamSession implements UpstreamSession {
         return playerInfoCache;
     }
 
-    @Override
     public EntityCache getEntityCache() {
         return entityCache;
     }
 
-    @Override
     public WindowCache getWindowCache() {
         return windowCache;
     }
 
-    @Override
     public ChunkCache getChunkCache() {
         return chunkCache;
     }
@@ -192,10 +169,9 @@ public class DragonUpstreamSession implements UpstreamSession {
     public MinecraftProtocol getProtocol() {
         return protocol;
     }
-    
-    @Override
+
     public JukeboxCache getJukeboxCache() {
-    	return jukeboxCache;
+        return jukeboxCache;
     }
 
     @Override
@@ -209,7 +185,7 @@ public class DragonUpstreamSession implements UpstreamSession {
         if (packet == null)
             return;
 
-        if(!proxy.getConfig().disable_packet_events){
+        if (!proxy.getConfig().disable_packet_events) {
             PacketToPlayerEvent packetEvent = new PacketToPlayerEvent(this, packet);
             proxy.getEventManager().callEvent(packetEvent);
             packet = packetEvent.getPacket();
@@ -288,7 +264,7 @@ public class DragonUpstreamSession implements UpstreamSession {
         PlayerKickEvent kickEvent = new PlayerKickEvent(this);
         proxy.getEventManager().callEvent(kickEvent);
         if (!connecting) {
-            if(kickEvent.isCancelled​())return; //not cancellable for pre pre login phase
+            if (kickEvent.isCancelled​()) return; //not cancellable for pre pre login phase
             sendPacket(new DisconnectPacket(false, reason), true);
             raknetClient.update(); //Force the DisconnectPacket to be sent before we close the connection
         }
@@ -305,7 +281,7 @@ public class DragonUpstreamSession implements UpstreamSession {
         proxy.getEventManager().callEvent(playerQuit);
 
         proxy.getLogger().info(proxy.getLang().get(Lang.CLIENT_DISCONNECTED,
-                proxy.getAuthMode().equals("cls") ? "unknown" : username, remoteAddress, reason));
+            proxy.getAuthMode().equals("cls") ? "unknown" : username, remoteAddress, reason));
         if (downstream != null)
             downstream.disconnect();
         proxy.getSessionRegister().removeSession(this);
@@ -396,7 +372,7 @@ public class DragonUpstreamSession implements UpstreamSession {
         proxy.getLogger().info(proxy.getLang().get(Lang.MESSAGE_CLIENT_CONNECTED, username, remoteAddress));
         PlayerAuthenticationEvent authEvent = new PlayerAuthenticationEvent(this);
         proxy.getEventManager().callEvent(authEvent);
-        if(authEvent.isCancelled​())return;
+        if (authEvent.isCancelled​()) return;
 
         if (proxy.getAuthMode().equals("online")) {
             proxy.getLogger().debug("Login online mode, sending placeholder datas");
@@ -445,14 +421,14 @@ public class DragonUpstreamSession implements UpstreamSession {
             if (!CLSAuthenticationService.getInstance().authenticate(this)) {
                 if (getDataCache().containsKey("cls_link_server") && getDataCache().containsKey("cls_link_pin")) {
                     disconnect("You must link your Mojang account, please visit :\n"
-                            + (String) getDataCache().get("cls_link_server") + "\n"
-                            + "Your pin code is: " + (String) getDataCache().get("cls_link_pin"));
+                        + (String) getDataCache().get("cls_link_server") + "\n"
+                        + "Your pin code is: " + (String) getDataCache().get("cls_link_pin"));
                     return;
                 }
                 disconnect(proxy.getLang().get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE)));
                 proxy.getLogger().severe(proxy.getLang()
-                        .get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE))
-                        .replace("§c", "").replace("§0", ""));
+                    .get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE))
+                    .replace("§c", "").replace("§0", ""));
                 return;
             }
             AuthenticationService authSvc = new AuthenticationService((String) dataCache.get("mojang_clientToken"));
@@ -561,7 +537,6 @@ public class DragonUpstreamSession implements UpstreamSession {
         cachedPackets.offer(packet);
     }
 
-    @Override
     public void onTick() {
         entityCache.onTick();
         chunkCache.onTick();

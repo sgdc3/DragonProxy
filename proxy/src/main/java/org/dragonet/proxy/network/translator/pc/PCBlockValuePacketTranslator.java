@@ -14,10 +14,10 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockValuePacket;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 
-public class PCBlockValuePacketTranslator implements IPCPacketTranslator<ServerBlockValuePacket> {
+public class PCBlockValuePacketTranslator implements PCPacketTranslator<ServerBlockValuePacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerBlockValuePacket packet) {
 

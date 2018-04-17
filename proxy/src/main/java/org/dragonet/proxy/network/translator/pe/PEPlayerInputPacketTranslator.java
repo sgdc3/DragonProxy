@@ -14,10 +14,10 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.PlayerInputPacket;
 
-public class PEPlayerInputPacketTranslator implements IPEPacketTranslator<PlayerInputPacket> {
+public class PEPlayerInputPacketTranslator implements PEPacketTranslator<PlayerInputPacket> {
 
     public Packet[] translate(UpstreamSession session, PlayerInputPacket packet) {
 

@@ -12,8 +12,7 @@ import org.dragonet.protocol.packets.StopSoundPacket;
 import org.dragonet.protocol.packets.TextPacket;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.cache.JukeboxCache;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.common.data.ParticleEffects;
 
 import com.github.steveice10.mc.protocol.data.game.world.effect.BreakBlockEffectData;
@@ -25,7 +24,7 @@ import com.github.steveice10.mc.protocol.data.game.world.effect.WorldEffectData;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayEffectPacket;
 
-public class PCPlayEffectPacketTranslator implements IPCPacketTranslator<ServerPlayEffectPacket> {
+public class PCPlayEffectPacketTranslator implements PCPacketTranslator<ServerPlayEffectPacket> {
 
 	@Override
 	public PEPacket[] translate(UpstreamSession session, ServerPlayEffectPacket packet) {

@@ -15,10 +15,10 @@ package org.dragonet.proxy.network.translator.pe;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.TextPacket;
 
-public class PEChatPacketTranslator implements IPEPacketTranslator<TextPacket> {
+public class PEChatPacketTranslator implements PEPacketTranslator<TextPacket> {
 
     public Packet[] translate(UpstreamSession session, TextPacket packet) {
         /*if (session.getDataCache().get(CacheKey.AUTHENTICATION_STATE) != null) {

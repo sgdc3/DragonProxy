@@ -18,18 +18,16 @@ import java.util.ArrayList;
 import org.dragonet.common.data.entity.PEEntityAttribute;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.AdventureSettingsPacket;
-import org.dragonet.protocol.packets.ChangeDimensionPacket;
 import org.dragonet.protocol.packets.PlayStatusPacket;
-import org.dragonet.protocol.packets.RemoveEntityPacket;
 import org.dragonet.protocol.packets.SetDifficultyPacket;
 import org.dragonet.protocol.packets.SetPlayerGameTypePacket;
 import org.dragonet.protocol.packets.UpdateAttributesPacket;
 import org.dragonet.proxy.DragonProxy;
 
-public class PCRespawnPacketTranslator implements IPCPacketTranslator<ServerRespawnPacket> {
+public class PCRespawnPacketTranslator implements PCPacketTranslator<ServerRespawnPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerRespawnPacket packet) {
 

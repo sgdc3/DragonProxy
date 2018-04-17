@@ -13,11 +13,12 @@
 package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockBreakAnimPacket;
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 
-public class PCBlockBreakAnimationPacketTranslator implements IPCPacketTranslator<ServerBlockBreakAnimPacket> {
+public class PCBlockBreakAnimationPacketTranslator implements PCPacketTranslator<ServerBlockBreakAnimPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerBlockBreakAnimPacket packet) {
 

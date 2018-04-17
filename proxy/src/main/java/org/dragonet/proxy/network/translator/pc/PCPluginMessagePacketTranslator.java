@@ -20,11 +20,11 @@ import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.protocol.WrappedPEPacket;
 import org.dragonet.protocol.packets.StopSoundPacket;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.common.utilities.BinaryStream;
 
-public class PCPluginMessagePacketTranslator implements IPCPacketTranslator<ServerPluginMessagePacket> {
+public class PCPluginMessagePacketTranslator implements PCPacketTranslator<ServerPluginMessagePacket> {
 	
 	public static final String CHANNEL_DRAGONPROXY = "DragonProxy";
 	public static final String CHANNEL_MC_BOPEN = "MC|BOpen";

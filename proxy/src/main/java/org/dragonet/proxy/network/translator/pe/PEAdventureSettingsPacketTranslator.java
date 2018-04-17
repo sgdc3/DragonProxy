@@ -14,10 +14,10 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.AdventureSettingsPacket;
 
-public class PEAdventureSettingsPacketTranslator implements IPEPacketTranslator<AdventureSettingsPacket> {
+public class PEAdventureSettingsPacketTranslator implements PEPacketTranslator<AdventureSettingsPacket> {
 
     public Packet[] translate(UpstreamSession session, AdventureSettingsPacket packet) {
 //        System.out.println(DebugTools.getAllFields(packet));

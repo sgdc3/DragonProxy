@@ -23,10 +23,10 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlaye
 import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 import org.dragonet.protocol.packets.PlayerActionPacket;
 
-public class PEPlayerActionPacketTranslator implements IPEPacketTranslator<PlayerActionPacket> {
+public class PEPlayerActionPacketTranslator implements PEPacketTranslator<PlayerActionPacket> {
 
     public Packet[] translate(UpstreamSession session, PlayerActionPacket packet) {
         if (packet.action == PlayerActionPacket.ACTION_RESPAWN) {

@@ -12,6 +12,7 @@
  */
 package org.dragonet.proxy.network.translator;
 
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedWindow;
 

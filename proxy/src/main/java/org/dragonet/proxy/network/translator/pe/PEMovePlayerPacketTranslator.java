@@ -16,7 +16,7 @@ import org.dragonet.common.data.entity.EntityType;
 import org.dragonet.protocol.packets.MovePlayerPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
+import org.dragonet.api.network.translator.PEPacketTranslator;
 
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
@@ -27,7 +27,7 @@ import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.NukkitMath;
 import org.dragonet.proxy.DragonProxy;
 
-public class PEMovePlayerPacketTranslator implements IPEPacketTranslator<MovePlayerPacket> {
+public class PEMovePlayerPacketTranslator implements PEPacketTranslator<MovePlayerPacket> {
 
     public Packet[] translate(UpstreamSession session, MovePlayerPacket packet) {
         CachedEntity entity = session.getEntityCache().getClientEntity();

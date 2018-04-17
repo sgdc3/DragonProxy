@@ -2,16 +2,9 @@ package org.dragonet.api.network;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
-import com.whirvis.jraknet.session.RakNetClientSession;
 import org.dragonet.common.utilities.LoginChainDecoder;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.LoginPacket;
-import org.dragonet.proxy.network.IDownstreamSession;
-import org.dragonet.proxy.network.PEPacketProcessor;
-import org.dragonet.proxy.network.cache.ChunkCache;
-import org.dragonet.proxy.network.cache.EntityCache;
-import org.dragonet.proxy.network.cache.JukeboxCache;
-import org.dragonet.proxy.network.cache.WindowCache;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -21,41 +14,32 @@ import java.util.UUID;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public interface UpstreamSession {
 
-    String getRaknetID();
-
-    RakNetClientSession getRaknetClient();
-
     boolean isLoggedIn();
 
     boolean isSpawned();
 
     InetSocketAddress getRemoteAddress();
 
-    PEPacketProcessor getPacketProcessor();
-
     LoginChainDecoder getProfile();
 
     String getUsername();
 
-    IDownstreamSession getDownstream();
+    DownstreamSession getDownstream();
 
     Map<String, Object> getDataCache();
 
     Map<UUID, PlayerListEntry> getPlayerInfoCache();
 
-    EntityCache getEntityCache();
-
-    WindowCache getWindowCache();
-
-    ChunkCache getChunkCache();
-
     MinecraftProtocol getProtocol();
-
-    JukeboxCache getJukeboxCache();
 
     void sendPacket(PEPacket packet);
 
-    //if sending a packer before spawn, you should set high_priority to true !
+    /**
+     * Sends a packet to the upstream client.
+     *
+     * @param packet        the packet
+     * @param high_priority required to be true if the packet is sent before spawn
+     */
     void sendPacket(PEPacket packet, boolean high_priority);
 
     void sendAllPackets(PEPacket[] packets, boolean high_priority);
@@ -85,7 +69,5 @@ public interface UpstreamSession {
     void handlePacketBinary(byte[] packet);
 
     void putCachePacket(PEPacket packet);
-
-    void onTick();
 
 }

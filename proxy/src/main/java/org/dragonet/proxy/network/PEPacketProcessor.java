@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,68 +14,59 @@ package org.dragonet.proxy.network;
 
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
+import com.github.steveice10.mc.protocol.packet.MinecraftPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientPluginMessagePacket;
-import java.util.ArrayDeque;
-import java.util.Deque;
-
-import com.github.steveice10.packetlib.packet.Packet;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
-import org.dragonet.common.utilities.JsonUtil;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import org.dragonet.protocol.packets.*;
-import org.dragonet.proxy.configuration.Lang;
+import org.dragonet.api.event.builtin.packet.PacketFromPlayerEvent;
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.gui.CustomFormComponent;
 import org.dragonet.common.gui.InputComponent;
 import org.dragonet.common.gui.LabelComponent;
 import org.dragonet.common.utilities.BinaryStream;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.dragonet.protocol.ProtocolInfo;
+import org.dragonet.common.utilities.JsonUtil;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.Protocol;
-
+import org.dragonet.protocol.ProtocolInfo;
+import org.dragonet.protocol.packets.*;
 import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.configuration.ServerConfig;
-import org.dragonet.api.event.builtin.packet.PacketFromPlayerEvent;
+import org.dragonet.proxy.configuration.Lang;
+import org.dragonet.proxy.network.translator.DragonPacketTranslator;
+
+import java.net.Proxy;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PEPacketProcessor {
 
     public final static int MAX_PACKETS_PER_CYCLE = 200;
+    private final static Set<Class<? extends PEPacket>> FORWARDED_PACKETS = Set.of(
+        InventoryTransactionPacket.class, ContainerClosePacket.class, ModalFormResponsePacket.class
+    );
 
-    private final static Set<Class<? extends PEPacket>> FORWARDED_PACKETS;
-
-    static {
-        Set<Class<? extends PEPacket>> packets = new HashSet<>();
-        packets.add(InventoryTransactionPacket.class);
-        packets.add(ContainerClosePacket.class);
-        packets.add(ModalFormResponsePacket.class);
-
-        FORWARDED_PACKETS = Collections.unmodifiableSet(packets);
-    }
-
-    private final AtomicBoolean enableForward = new AtomicBoolean();
-
+    private final AtomicBoolean enableForward;
+    private final Deque<byte[]> packets;
     private final UpstreamSession client;
-    private final Deque<byte[]> packets = new ArrayDeque<>();
 
-    private Proxy authProxy = null;
+    private Optional<Proxy> authProxy;
 
-    public PEPacketProcessor(UpstreamSession client) {
-        ServerConfig config = DragonProxy.getInstance().getConfig();
-
-        if (config.proxy_type.equalsIgnoreCase("none") || config.proxy_type.equalsIgnoreCase("direct"))
-            authProxy = null;
-        else {
-            Proxy.Type type = Proxy.Type.valueOf(config.proxy_type.toUpperCase());
-            if (type != null)
-                authProxy = new Proxy(type, new InetSocketAddress(config.proxy_ip, config.proxy_port));
-            else
-                authProxy = null;
-        }
-
+    public PEPacketProcessor(UpstreamSession client, Optional<Proxy> authProxy) {
+        enableForward = new AtomicBoolean();
+        packets = new ArrayDeque<>();
         this.client = client;
+        this.authProxy = authProxy;
+        /*
+        ServerConfig config = DragonProxy.getInstance().getConfig();
+        if (config.proxy_type.equalsIgnoreCase("none") || config.proxy_type.equalsIgnoreCase("direct")) {
+            authProxy = null;
+        } else {
+            Proxy.Type type = Proxy.Type.valueOf(config.proxy_type.toUpperCase());
+            authProxy = new Proxy(type, new InetSocketAddress(config.proxy_ip, config.proxy_port));
+        }
+        */
     }
 
     public UpstreamSession getClient() {
@@ -87,37 +78,38 @@ public class PEPacketProcessor {
     }
 
     public void onTick() {
-        int cnt = 0;
+        int packetCount = 0;
         Timings.playerNetworkReceiveTimer.startTiming();
-        while (cnt < MAX_PACKETS_PER_CYCLE && !packets.isEmpty()) {
-            cnt++;
-            byte[] p = packets.pop();
+        while (packetCount < MAX_PACKETS_PER_CYCLE && !packets.isEmpty()) {
+            packetCount++;
+            byte[] packet = packets.pop();
             PEPacket[] packets;
             try {
-                packets = Protocol.decode(p);
-                if (packets == null || packets.length <= 0)
+                packets = Protocol.decode(packet);
+                if (packets == null || packets.length <= 0) {
                     continue;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
             }
-            for (PEPacket decoded : packets)
+            for (PEPacket decoded : packets) {
                 try (Timing timing = Timings.getReceiveDataPacketTiming(decoded)) {
                     handlePacket(decoded);
                 }
+            }
         }
         Timings.playerNetworkReceiveTimer.stopTiming();
     }
 
     // this method should be in UpstreamSession
     public void handlePacket(PEPacket packet) {
-        if (packet == null)
-            return;
+        Preconditions.checkNotNull(packet);
 
-        if(!client.getProxy().getConfig().disable_packet_events){
+        if (!client.getProxy().getConfig().disable_packet_events) {
             PacketFromPlayerEvent packetEvent = new PacketFromPlayerEvent(client, packet);
             client.getProxy().getEventManager().callEvent(packetEvent);
-            if(packetEvent.isCancelled()){
+            if (packetEvent.isCancelled()) {
                 return;
             }
         }
@@ -155,7 +147,7 @@ public class PEPacketProcessor {
                     JsonArray array = JsonUtil.parseArray(formResponse.formData);
                     this.client.getDataCache().remove(CacheKey.AUTHENTICATION_STATE);
                     this.client.authenticate(array.get(2).getAsString(), array.get(3).getAsString(), authProxy);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     this.client.sendChat(this.client.getProxy().getLang().get(Lang.MESSAGE_ONLINE_LOGIN_FAILD));
                 }
                 return;
@@ -163,37 +155,37 @@ public class PEPacketProcessor {
         }
 
         switch (packet.pid()) {
-        case ProtocolInfo.BATCH_PACKET:
-            DragonProxy.getInstance().getLogger().debug("Received batch packet from client !");
-            break;
-        case ProtocolInfo.LOGIN_PACKET:
-            this.client.onLogin((LoginPacket) packet);
-            break;
-        case ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET:
-            if (!this.client.isLoggedIn())
-                this.client.postLogin();
-
-            break;
-        default:
-            if (this.client.getDownstream() == null || !this.client.getDownstream().isConnected())
+            case ProtocolInfo.BATCH_PACKET:
+                DragonProxy.getInstance().getLogger().debug("Received batch packet from client !");
                 break;
+            case ProtocolInfo.LOGIN_PACKET:
+                this.client.onLogin((LoginPacket) packet);
+                break;
+            case ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET:
+                if (!this.client.isLoggedIn())
+                    this.client.postLogin();
 
-            if (enableForward.get() && FORWARDED_PACKETS.contains(packet.getClass())) {
-                BinaryStream bis = new BinaryStream();
-                bis.putString("PacketForward");
-                bis.putByteArray(packet.getBuffer());
-                ClientPluginMessagePacket msg = new ClientPluginMessagePacket("DragonProxy", bis.getBuffer());
-                client.getDownstream().send(msg);
-            } else
-                // IMPORTANT Do not send packet until client is connected !
-                if (client.isSpawned()) {
-                    Packet[] translated = PacketTranslatorRegister.translateToPC(this.client, packet);
-                    if (translated == null || translated.length == 0)
-                        break;
+                break;
+            default:
+                if (this.client.getDownstream() == null || !this.client.getDownstream().isConnected())
+                    break;
 
-                    client.getDownstream().send(translated);
-                }
-            break;
+                if (enableForward.get() && FORWARDED_PACKETS.contains(packet.getClass())) {
+                    BinaryStream bis = new BinaryStream();
+                    bis.putString("PacketForward");
+                    bis.putByteArray(packet.getBuffer());
+                    ClientPluginMessagePacket msg = new ClientPluginMessagePacket("DragonProxy", bis.getBuffer());
+                    client.getDownstream().send(msg);
+                } else
+                    // IMPORTANT Do not send packet until client is connected !
+                    if (client.isSpawned()) {
+                        MinecraftPacket[] translated = DragonPacketTranslator.translateToPC(this.client, packet);
+                        if (translated == null || translated.length == 0)
+                            break;
+
+                        client.getDownstream().send(translated);
+                    }
+                break;
         }
     }
 

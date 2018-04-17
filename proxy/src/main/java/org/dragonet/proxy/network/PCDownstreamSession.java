@@ -25,15 +25,16 @@ import com.github.steveice10.packetlib.event.session.PacketSendingEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
-import org.dragonet.api.network.IDownstreamSession;
+import org.dragonet.api.network.DownstreamSession;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
+import org.dragonet.proxy.network.translator.DragonPacketTranslator;
 
 /**
  * Maintaince the connection between the proxy and remote Minecraft server.
  */
-public class PCDownstreamSession implements IDownstreamSession<Packet> {
+public class PCDownstreamSession implements DownstreamSession<Packet> {
 
     public MinecraftProtocol protocol;
 
@@ -46,13 +47,13 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         this.upstream = upstream;
     }
 
-    public void connect(String addr, int port) {
+    public void connect(String address, int port) {
         if (this.protocol == null) {
             upstream.onConnected(); // Clear the flags
             upstream.disconnect("ERROR! ");
             return;
         }
-        remoteClient = new Client(addr, port, protocol, new TcpSessionFactory());
+        remoteClient = new Client(address, port, protocol, new TcpSessionFactory());
         remoteClient.getSession().setConnectTimeout(5);
         remoteClient.getSession().setReadTimeout(5);
         remoteClient.getSession().setWriteTimeout(5);
@@ -92,7 +93,7 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
             public void packetReceived(PacketReceivedEvent event) {
                 // Handle the packet
                 try {
-                    PEPacket[] packets = PacketTranslatorRegister.translateToPE(upstream, event.getPacket());
+                    PEPacket[] packets = DragonPacketTranslator.translateToPE(upstream, event.getPacket());
                     if (packets == null) {
                         return;
                     }

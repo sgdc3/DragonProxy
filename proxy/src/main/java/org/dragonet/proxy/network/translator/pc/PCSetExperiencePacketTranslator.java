@@ -16,11 +16,11 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.Serv
 import org.dragonet.common.data.entity.PEEntityAttribute;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.UpdateAttributesPacket;
 
-public class PCSetExperiencePacketTranslator implements IPCPacketTranslator<ServerPlayerSetExperiencePacket> {
+public class PCSetExperiencePacketTranslator implements PCPacketTranslator<ServerPlayerSetExperiencePacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerPlayerSetExperiencePacket packet) {
 

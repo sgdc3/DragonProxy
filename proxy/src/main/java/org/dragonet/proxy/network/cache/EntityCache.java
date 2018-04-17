@@ -20,6 +20,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnExpOrbPacket;
 
+import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.data.entity.EntityType;
 import org.dragonet.proxy.network.UpstreamSession;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;

@@ -15,12 +15,12 @@ package org.dragonet.proxy.network.translator.pc;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUpdateTileEntityPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.BlockEntityDataPacket;
 import org.dragonet.common.maths.BlockPosition;
 
-public class PCUpdateTileEntityPacketTranslator implements IPCPacketTranslator<ServerUpdateTileEntityPacket> {
+public class PCUpdateTileEntityPacketTranslator implements PCPacketTranslator<ServerUpdateTileEntityPacket> {
 
     public PEPacket[] translate(UpstreamSession session, ServerUpdateTileEntityPacket packet) {
 
