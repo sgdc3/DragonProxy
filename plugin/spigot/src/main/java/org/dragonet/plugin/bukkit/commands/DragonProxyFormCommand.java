@@ -16,7 +16,7 @@ import org.dragonet.common.gui.DropDownComponent;
 import org.dragonet.common.gui.InputComponent;
 import org.dragonet.common.gui.LabelComponent;
 import org.dragonet.plugin.bukkit.BedrockPlayer;
-import org.dragonet.plugin.bukkit.DPAddonBukkit;
+import org.dragonet.plugin.bukkit.DragonProxyBukkitAddon;
 
 /**
  *
@@ -24,9 +24,9 @@ import org.dragonet.plugin.bukkit.DPAddonBukkit;
  */
 public class DragonProxyFormCommand implements CommandExecutor {
 
-    private final DPAddonBukkit plugin;
+    private final DragonProxyBukkitAddon plugin;
 
-    public DragonProxyFormCommand(DPAddonBukkit plugin) {
+    public DragonProxyFormCommand(DragonProxyBukkitAddon plugin) {
         this.plugin = plugin; // Store the plugin in situations where you need it.
     }
 

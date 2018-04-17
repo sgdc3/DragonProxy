@@ -28,7 +28,7 @@ public class MovePlayerPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MOVE_PLAYER_PACKET;
     }
 

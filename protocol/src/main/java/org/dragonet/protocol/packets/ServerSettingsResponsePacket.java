@@ -9,7 +9,6 @@ import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
 /**
- *
  * @author Epic
  */
 public class ServerSettingsResponsePacket extends PEPacket {
@@ -22,7 +21,7 @@ public class ServerSettingsResponsePacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SERVER_SETTINGS_RESPONSE_PACKET;
     }
 

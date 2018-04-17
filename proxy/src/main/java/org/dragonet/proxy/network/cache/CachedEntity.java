@@ -186,8 +186,8 @@ public class CachedEntity {
 //                session.sendPacket(pk); //BUGGY
         } else if (this.peType != null) {
             AddEntityPacket pk = new AddEntityPacket();
-            pk.rtid = this.proxyEid;
-            pk.eid = this.proxyEid;
+            pk.runtimeId = this.proxyEid;
+            pk.entityId = this.proxyEid;
             pk.type = this.peType.getPeType();
             pk.position = new Vector3F((float) this.x, (float) this.y - this.peType.getOffset(), (float) this.z);
             pk.motion = new Vector3F((float) this.motionX, (float) this.motionY, (float) this.motionZ);

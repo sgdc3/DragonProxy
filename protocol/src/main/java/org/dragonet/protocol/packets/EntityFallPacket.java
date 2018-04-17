@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.dragonet.protocol.packets;
 
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- *
- * @author Epic
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class EntityFallPacket extends PEPacket {
 
     public long rtid;
@@ -19,11 +11,10 @@ public class EntityFallPacket extends PEPacket {
     public boolean unk1;
 
     public EntityFallPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.ENTITY_FALL_PACKET;
     }
 

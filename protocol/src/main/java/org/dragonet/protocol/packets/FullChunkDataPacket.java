@@ -3,9 +3,7 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class FullChunkDataPacket extends PEPacket {
 
     public int x;
@@ -13,7 +11,6 @@ public class FullChunkDataPacket extends PEPacket {
     public byte[] payload;
 
     public FullChunkDataPacket() {
-
     }
 
     public FullChunkDataPacket(int x, int z) {
@@ -28,7 +25,7 @@ public class FullChunkDataPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.FULL_CHUNK_DATA_PACKET;
     }
 

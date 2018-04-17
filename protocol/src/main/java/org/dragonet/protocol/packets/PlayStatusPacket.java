@@ -33,14 +33,14 @@ public class PlayStatusPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAY_STATUS_PACKET;
     }
 
     @Override
     public void encodeHeader() {
         if (protocol < 130) { // MCPE <= 1.1
-            putByte((byte) (pid() & 0xFF));
+            putByte((byte) (getPacketId() & 0xFF));
         } else {
             super.encodeHeader();
         }

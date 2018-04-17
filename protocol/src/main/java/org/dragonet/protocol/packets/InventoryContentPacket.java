@@ -1,19 +1,20 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class InventoryContentPacket extends PEPacket {
 
     public int windowId;
     public Slot[] items;
 
+    public InventoryContentPacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.INVENTORY_CONTENT_PACKET;
     }
 

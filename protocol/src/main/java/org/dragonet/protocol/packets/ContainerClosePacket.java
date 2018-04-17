@@ -3,15 +3,12 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ContainerClosePacket extends PEPacket {
 
     public int windowId;
 
     public ContainerClosePacket() {
-
     }
 
     public ContainerClosePacket(int windowId) {
@@ -19,7 +16,7 @@ public class ContainerClosePacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.CONTAINER_CLOSE_PACKET;
     }
 

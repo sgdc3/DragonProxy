@@ -8,14 +8,14 @@
  */
 package org.dragonet.protocol.type.chunk;
 
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 
 import java.util.Arrays;
 
 /**
  * Chunk's blocks, lights and other immutable data.
  */
-public class ChunkData extends BinaryStream {
+public class ChunkData extends PEBinaryStream {
 
     /**
      * 16x16x16 section of the chunk. The array's keys also indicate the

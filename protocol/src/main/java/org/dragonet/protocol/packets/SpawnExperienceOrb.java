@@ -4,13 +4,14 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class SpawnExperienceOrb extends PEPacket {
 
     public Vector3F position;
     public int count;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SPAWN_EXPERIENCE_ORB_PACKET;
     }
 
@@ -25,5 +26,4 @@ public class SpawnExperienceOrb extends PEPacket {
         this.position = getVector3F();
         this.count = getVarInt();
     }
-
 }

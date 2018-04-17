@@ -37,7 +37,7 @@ import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.common.data.entity.Skin;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -166,7 +166,7 @@ public class PCPlayerPositionRotationPacketTranslator implements PCPacketTransla
             }
 
             // Notify the server
-            BinaryStream bis = new BinaryStream();
+            PEBinaryStream bis = new PEBinaryStream();
             bis.putString("Notification"); // command
             ClientPluginMessagePacket pluginMessage = new ClientPluginMessagePacket("DragonProxy", bis.get());
             session.getDownstream().send(pluginMessage);

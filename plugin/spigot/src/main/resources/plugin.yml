@@ -1,11 +1,11 @@
-name: DragonProxy-ServerAddon
-main: org.dragonet.plugin.bukkit.DPAddonBukkit
-version: 0.1
-author: [DefinitlyEvil, Epic]
+name: DragonProxyBukkitAddon
+main: org.dragonet.plugin.bukkit.DragonProxyBukkitAddon
+version: ${project.version}
+author: "Dragonet Foundation"
 softdepend: [LuckPerms]
 commands:
-   form:
-      description: DragonProxy form test command
-      usage: /<command>
-      permission: dragonproxy.form
-      permission-message: You don't have <permission>
+    form:
+        description: DragonProxy form test command
+        usage: /<command>
+        permission: dragonproxy.form
+        permission-message: You don't have <permission>

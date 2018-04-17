@@ -24,7 +24,7 @@ public class MobEffectPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MOB_EFFECT_PACKET;
     }
 

@@ -11,7 +11,7 @@ public class WrappedPEPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return 0;
     }
 

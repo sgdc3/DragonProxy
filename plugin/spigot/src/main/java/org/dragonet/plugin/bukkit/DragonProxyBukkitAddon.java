@@ -17,7 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.plugin.bukkit.commands.DragonProxyFormCommand;
 import org.dragonet.plugin.bukkit.compat.luckperms.LuckPermsCompat;
 import org.dragonet.plugin.bukkit.events.ModalFormResponseEvent;
@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class DPAddonBukkit extends JavaPlugin implements Listener {
+public class DragonProxyBukkitAddon extends JavaPlugin implements Listener {
 
-    private static DPAddonBukkit instance;
+    private static DragonProxyBukkitAddon instance;
 
-    public static DPAddonBukkit getInstance() {
+    public static DragonProxyBukkitAddon getInstance() {
         return instance;
     }
 
@@ -65,7 +65,7 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
         BedrockPlayer.createForPlayer(player);
 
         // enable packet foward
-        BinaryStream bis = new BinaryStream();
+        PEBinaryStream bis = new PEBinaryStream();
         bis.putString("PacketForward");
         bis.putBoolean(true);
         player.sendPluginMessage(this, "DragonProxy", bis.getBuffer());

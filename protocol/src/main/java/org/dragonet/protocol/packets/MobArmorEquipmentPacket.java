@@ -1,8 +1,8 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
 public class MobArmorEquipmentPacket extends PEPacket {
 
@@ -13,7 +13,7 @@ public class MobArmorEquipmentPacket extends PEPacket {
     public Slot boots;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MOB_ARMOR_EQUIPMENT_PACKET;
     }
 

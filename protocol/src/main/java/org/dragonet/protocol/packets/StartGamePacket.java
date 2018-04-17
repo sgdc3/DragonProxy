@@ -1,17 +1,15 @@
 package org.dragonet.protocol.packets;
 
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
+import org.dragonet.protocol.GameRule;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
-import org.dragonet.common.utilities.GameRule;
 
 import java.util.Map;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class StartGamePacket extends PEPacket {
 
     public long eid;
@@ -59,11 +57,10 @@ public class StartGamePacket extends PEPacket {
     public int enchantmentSeed;
 
     public StartGamePacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.START_GAME_PACKET;
     }
 

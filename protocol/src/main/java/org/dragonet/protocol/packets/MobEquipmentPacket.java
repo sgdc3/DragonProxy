@@ -1,8 +1,8 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
 /**
  * Created on 2017/10/22.
@@ -16,7 +16,7 @@ public class MobEquipmentPacket extends PEPacket {
     public int windowId;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MOB_EQUIPMENT_PACKET;
     }
 

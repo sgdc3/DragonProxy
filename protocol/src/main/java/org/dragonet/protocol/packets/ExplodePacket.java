@@ -1,21 +1,25 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ExplodePacket extends PEPacket {
 
     public Vector3F position;
     public float radius;
     public List<BlockPosition> destroyedBlocks;
 
+    public ExplodePacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.EXPLODE_PACKET;
     }
 
@@ -37,8 +41,8 @@ public class ExplodePacket extends PEPacket {
         int entries = (int) getUnsignedVarInt();
         this.destroyedBlocks = new ArrayList<>(entries);
 
-        for (int i = 0; i < entries; i++)
+        for (int i = 0; i < entries; i++) {
             this.destroyedBlocks.add(getBlockPosition());
+        }
     }
-
 }

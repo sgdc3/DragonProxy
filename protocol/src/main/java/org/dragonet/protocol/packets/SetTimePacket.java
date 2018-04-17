@@ -3,19 +3,16 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/22.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class SetTimePacket extends PEPacket {
 
     public int time;
 
     public SetTimePacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_TIME_PACKET;
     }
 

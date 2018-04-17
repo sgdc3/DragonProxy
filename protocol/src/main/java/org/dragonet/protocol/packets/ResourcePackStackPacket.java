@@ -9,7 +9,7 @@ import org.dragonet.protocol.ProtocolInfo;
 public class ResourcePackStackPacket extends PEPacket {
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
     }
 

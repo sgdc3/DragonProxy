@@ -34,7 +34,7 @@ public final class EntityCache {
 
     private final UpstreamSession upstream;
     private final CachedEntity clientEntity;
-    // proxy eid -> entity
+    // proxy entityId -> entity
     private final Map<Long, CachedEntity> entities = Collections.synchronizedMap(new HashMap<>());
     // pro
     private final Set<Long> playerEntities = Collections.synchronizedSet(new HashSet<Long>());

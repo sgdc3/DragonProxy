@@ -4,9 +4,7 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/11/15.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ChangeDimensionPacket extends PEPacket {
 
     public int dimension;
@@ -14,11 +12,10 @@ public class ChangeDimensionPacket extends PEPacket {
     public boolean respawn;
 
     public ChangeDimensionPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.CHANGE_DIMENSION_PACKET;
     }
 
@@ -31,6 +28,5 @@ public class ChangeDimensionPacket extends PEPacket {
 
     @Override
     public void decodePayload() {
-
     }
 }

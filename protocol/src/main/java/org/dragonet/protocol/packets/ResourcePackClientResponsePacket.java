@@ -21,7 +21,7 @@ public class ResourcePackClientResponsePacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET;
     }
 

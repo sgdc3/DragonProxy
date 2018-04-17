@@ -19,7 +19,7 @@ public class SetHealthPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_HEALTH_PACKET;
     }
 

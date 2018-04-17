@@ -13,7 +13,7 @@
 package org.dragonet.protocol.type.transaction;
 
 import org.dragonet.common.data.inventory.Slot;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.protocol.packets.InventoryTransactionPacket;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -109,7 +109,7 @@ public class InventoryTransactionAction {
         return action;
     }
 
-    public void write(BinaryStream packet) {
+    public void write(PEBinaryStream packet) {
         packet.putUnsignedVarInt(sourceType);
 
         switch (sourceType) {

@@ -1,9 +1,7 @@
 package org.dragonet.protocol;
 
-import org.dragonet.common.utilities.BinaryStream;
-
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class PEPacket extends BinaryStream {
+public abstract class PEPacket extends PEBinaryStream {
 
     private boolean encoded;
     private boolean decoded;
@@ -34,8 +32,8 @@ public abstract class PEPacket extends BinaryStream {
     }
 
     public void encodeHeader() {
-        // putUnsignedVarInt(pid());
-        putByte((byte) (pid() & 0xFF));
+        // putUnsignedVarInt(getPacketId());
+        putByte((byte) (getPacketId() & 0xFF));
         putByte((byte) 0x00);
         putByte((byte) 0x00);
     }
@@ -45,7 +43,7 @@ public abstract class PEPacket extends BinaryStream {
         get(2);
     }
 
-    public abstract int pid();
+    public abstract int getPacketId();
 
     public abstract void encodePayload();
 

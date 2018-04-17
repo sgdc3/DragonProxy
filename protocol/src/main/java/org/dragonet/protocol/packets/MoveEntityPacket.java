@@ -22,7 +22,7 @@ public class MoveEntityPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MOVE_ENTITY_PACKET;
     }
 

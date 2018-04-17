@@ -3,19 +3,16 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/11/15.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class CommandRequestPacket extends PEPacket {
 
     public String command;
 
     public CommandRequestPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.COMMAND_REQUEST_PACKET;
     }
 

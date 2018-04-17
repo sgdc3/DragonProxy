@@ -1,12 +1,10 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ContainerOpenPacket extends PEPacket {
 
     public int windowId;
@@ -14,8 +12,11 @@ public class ContainerOpenPacket extends PEPacket {
     public BlockPosition position;
     public long eid = -1;
 
+    public ContainerOpenPacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.CONTAINER_OPEN_PACKET;
     }
 
@@ -34,6 +35,4 @@ public class ContainerOpenPacket extends PEPacket {
         position = getBlockPosition();
         eid = getVarLong();
     }
-
-    //private
 }

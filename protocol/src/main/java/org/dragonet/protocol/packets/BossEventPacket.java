@@ -3,6 +3,7 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class BossEventPacket extends PEPacket {
 
     public static final int TYPE_SHOW = 0;
@@ -24,8 +25,11 @@ public class BossEventPacket extends PEPacket {
     public int color;
     public int overlay;
 
+    public BossEventPacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.BOSS_EVENT_PACKET;
     }
 
@@ -84,5 +88,4 @@ public class BossEventPacket extends PEPacket {
         }
 
     }
-
 }

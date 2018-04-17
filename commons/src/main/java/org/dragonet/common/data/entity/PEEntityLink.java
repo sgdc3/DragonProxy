@@ -1,8 +1,9 @@
 package org.dragonet.common.data.entity;
 
 /**
- * Created on 2017/10/21.
+ * Represents an EntityLink from the Bedrock edition protocol.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class PEEntityLink {
 
     public static final byte TYPE_REMOVE = 0;
@@ -12,7 +13,7 @@ public class PEEntityLink {
     public long riding;
     public long rider;
     public byte type;
-    public byte unknownByte = 0x00;
+    public byte unknownByte;
 
     public PEEntityLink(long riding, long rider, byte type, byte unknownByte) {
         this.riding = riding;
@@ -20,4 +21,5 @@ public class PEEntityLink {
         this.type = type;
         this.unknownByte = unknownByte;
     }
+
 }

@@ -40,7 +40,7 @@ public class InventoryTransactionPacket extends PEPacket {
     public TransactionData transactionData;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
     }
 

@@ -12,7 +12,6 @@
  */
 package org.dragonet.protocol;
 
-import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.common.utilities.Zlib;
 import org.dragonet.protocol.packets.*;
 
@@ -23,6 +22,10 @@ import java.util.*;
 import static org.dragonet.protocol.ProtocolInfo.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
+/**
+ * TODO: getter and setters instead of public access
+ * TODO: javadoc
+ */
 public final class Protocol {
 
     private static final Map<Byte, Class<? extends PEPacket>> PACKETS;
@@ -115,7 +118,7 @@ public final class Protocol {
         }
 
         List<PEPacket> packets = new ArrayList<>(2);
-        BinaryStream stream = new BinaryStream(inflated);
+        PEBinaryStream stream = new PEBinaryStream(inflated);
         while (stream.offset < inflated.length) {
             byte[] buffer = stream.get((int) stream.getUnsignedVarInt());
             try {
@@ -130,7 +133,7 @@ public final class Protocol {
     }
 
     public static PEPacket decodeSingle(byte[] buffer) throws PEPacketDecodeException {
-        byte packetId = (byte) new BinaryStream(buffer).getUnsignedVarInt();
+        byte packetId = (byte) new PEBinaryStream(buffer).getUnsignedVarInt();
         if (PACKETS.containsKey(packetId)) {
             Class<? extends PEPacket> packetClass = PACKETS.get(packetId);
             try {

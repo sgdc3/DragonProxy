@@ -1,9 +1,9 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.protocol.PEBinaryStream;
+import org.dragonet.common.utilities.LoginChainDecoder;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.utilities.BinaryStream;
-import org.dragonet.common.utilities.LoginChainDecoder;
 
 /**
  * Created on 2017/10/21.
@@ -18,7 +18,7 @@ public class LoginPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.LOGIN_PACKET;
     }
 
@@ -35,7 +35,7 @@ public class LoginPacket extends PEPacket {
         }
 
         byte[] payload = getByteArray();
-        BinaryStream bin = new BinaryStream(payload);
+        PEBinaryStream bin = new PEBinaryStream(payload);
         byte[] chain = bin.get(bin.getLInt());
         byte[] client = bin.get(bin.getLInt());
         decoded = new LoginChainDecoder(chain, client);

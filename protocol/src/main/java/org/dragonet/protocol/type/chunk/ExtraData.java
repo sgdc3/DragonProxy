@@ -8,7 +8,7 @@
  */
 package org.dragonet.protocol.type.chunk;
 
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 
 public class ExtraData {
 
@@ -24,12 +24,12 @@ public class ExtraData {
         this.value = value;
     }
 
-    public void encode(BinaryStream out) {
+    public void encode(PEBinaryStream out) {
         out.putVarInt(key);
         out.putLShort(value);
     }
 
-    public void decode(BinaryStream in) {
+    public void decode(PEBinaryStream in) {
         key = (int) in.getUnsignedVarInt();
         value = (short) in.getLShort();
     }

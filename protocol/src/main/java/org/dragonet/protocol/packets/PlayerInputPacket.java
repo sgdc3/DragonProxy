@@ -25,7 +25,7 @@ public class PlayerInputPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAYER_INPUT_PACKET;
     }
 

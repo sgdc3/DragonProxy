@@ -16,7 +16,7 @@ public class LevelSoundEventPacket extends PEPacket {
     public boolean isGlobal;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.LEVEL_SOUND_EVENT_PACKET;
     }
 

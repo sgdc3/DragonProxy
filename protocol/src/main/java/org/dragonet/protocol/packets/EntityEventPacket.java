@@ -3,8 +3,9 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class EntityEventPacket extends PEPacket {
-    
+
     public static final int HURT_ANIMATION = 2;
     public static final int DEATH_ANIMATION = 3;
     public static final int TAME_FAIL = 6;
@@ -26,9 +27,12 @@ public class EntityEventPacket extends PEPacket {
     public long eid;
     public int event;
     public int data;
-    
+
+    public EntityEventPacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.ENTITY_EVENT_PACKET;
     }
 
@@ -37,7 +41,7 @@ public class EntityEventPacket extends PEPacket {
         this.reset();
         this.putEntityRuntimeId(this.eid);
         this.putByte((byte) this.event);
-        this.putVarInt((byte) this.data);  
+        this.putVarInt((byte) this.data);
     }
 
     @Override

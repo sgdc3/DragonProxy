@@ -16,7 +16,7 @@ public class RespawnPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.RESPAWN_PACKET;
     }
 

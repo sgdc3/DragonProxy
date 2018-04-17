@@ -1,13 +1,11 @@
 package org.dragonet.protocol.packets;
 
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.ProtocolInfo;
 import org.dragonet.common.data.blocks.GlobalBlockPalette;
 import org.dragonet.common.maths.BlockPosition;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class UpdateBlockPacket extends PEPacket {
 
     public static final int FLAG_NONE = 0b0000;
@@ -26,11 +24,10 @@ public class UpdateBlockPacket extends PEPacket {
     public int runtimeId;
 
     public UpdateBlockPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.UPDATE_BLOCK_PACKET;
     }
 

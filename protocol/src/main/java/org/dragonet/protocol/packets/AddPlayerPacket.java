@@ -1,18 +1,19 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.entity.PEEntityLink;
 import org.dragonet.common.data.entity.meta.EntityMetaData;
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.entity.PEEntityLink;
-import org.dragonet.common.data.inventory.Slot;
 
 import java.util.UUID;
 
 /**
- * Created on 2017/10/21.
+ * Related documentation:
  * https://github.com/NiclasOlofsson/MiNET/blob/master/src/MiNET/MiNET/Net/MCPE%20Protocol%20Documentation.md#add-player-0x0c
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class AddPlayerPacket extends PEPacket {
 
     public UUID uuid;
@@ -31,12 +32,28 @@ public class AddPlayerPacket extends PEPacket {
     public EntityMetaData meta;
     public PEEntityLink[] links;
 
-    public AddPlayerPacket() {
-
+    public AddPlayerPacket(UUID uuid, String username, String thirdpartyName, int platformID, long eid, long rtid,
+                           String platformChatID, Vector3F position, Vector3F motion, float pitch, float yaw,
+                           float headYaw, Slot item, EntityMetaData meta, PEEntityLink[] links) {
+        this.uuid = uuid;
+        this.username = username;
+        this.thirdpartyName = thirdpartyName;
+        this.platformID = platformID;
+        this.eid = eid;
+        this.rtid = rtid;
+        this.platformChatID = platformChatID;
+        this.position = position;
+        this.motion = motion;
+        this.pitch = pitch;
+        this.yaw = yaw;
+        this.headYaw = headYaw;
+        this.item = item;
+        this.meta = meta;
+        this.links = links;
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.ADD_PLAYER_PACKET;
     }
 
@@ -92,20 +109,22 @@ public class AddPlayerPacket extends PEPacket {
         // meta = getEntityMetadata();
         meta = EntityMetaData.createDefault(); // TODO
 
-//        getUnsignedVarInt();
-//        getUnsignedVarInt();
-//        getUnsignedVarInt();
-//        getUnsignedVarInt();
-//        getUnsignedVarInt();
-//
-//        getLLong();
-//
-//        int linkCount = (int) getUnsignedVarInt();
-//        links = new PEEntityLink[linkCount];
-//        if (linkCount > 0) {
-//            for (int i = 0; i < linkCount; ++i) {
-//                links[i] = getEntityLink();
-//            }
-//        }
+        /*
+        getUnsignedVarInt();
+        getUnsignedVarInt();
+        getUnsignedVarInt();
+        getUnsignedVarInt();
+        getUnsignedVarInt();
+
+        getLLong();
+
+        int linkCount = (int) getUnsignedVarInt();
+        links = new PEEntityLink[linkCount];
+        if (linkCount > 0) {
+            for (int i = 0; i < linkCount; ++i) {
+                links[i] = getEntityLink();
+            }
+        }
+        */
     }
 }

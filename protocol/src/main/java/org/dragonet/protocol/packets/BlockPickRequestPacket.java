@@ -1,9 +1,10 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class BlockPickRequestPacket extends PEPacket {
 
     public int x;
@@ -12,8 +13,11 @@ public class BlockPickRequestPacket extends PEPacket {
     public boolean addUserData;
     public int selectedSlot;
 
+    public BlockPickRequestPacket() {
+    }
+
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.BLOCK_PICK_REQUEST_PACKET;
     }
 
@@ -29,6 +33,5 @@ public class BlockPickRequestPacket extends PEPacket {
 
     @Override
     public void encodePayload() {
-
     }
 }

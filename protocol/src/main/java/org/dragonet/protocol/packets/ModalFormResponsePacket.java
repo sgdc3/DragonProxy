@@ -12,7 +12,7 @@ public class ModalFormResponsePacket extends PEPacket {
     public String formData;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.MODAL_FORM_RESPONSE_PACKET;
     }
 

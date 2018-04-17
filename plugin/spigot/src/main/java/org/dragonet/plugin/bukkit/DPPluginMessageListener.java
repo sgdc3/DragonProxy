@@ -2,22 +2,22 @@ package org.dragonet.plugin.bukkit;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.Protocol;
 
 public class DPPluginMessageListener implements PluginMessageListener {
 
-    private final DPAddonBukkit plugin;
+    private final DragonProxyBukkitAddon plugin;
 
-    public DPPluginMessageListener(DPAddonBukkit plugin) {
+    public DPPluginMessageListener(DragonProxyBukkitAddon plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] data) {
         if(!channel.equals("DragonProxy")) return; // not likely to happen but...
-        BinaryStream bis = new BinaryStream(data);
+        PEBinaryStream bis = new PEBinaryStream(data);
         String command = bis.getString();
         if(command.equals("Notification")) {
             plugin.detectedBedrockPlayer(player);

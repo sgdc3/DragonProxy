@@ -1,5 +1,5 @@
-name: DragonProxy-ServerAddon
-main: org.dragonet.plugin.bungeecord.DPAddonBungee
-version: 0.1
-authors: ["DefinitlyEvil", "Epic"]
+name: DragonProxyBungeecordAddon
+main: org.dragonet.plugin.bungeecord.DragonProxyBungeeAddon
+version: ${project.version}
+author: "Dragonet Foundation"
 softdepend: ["LuckPerms"]

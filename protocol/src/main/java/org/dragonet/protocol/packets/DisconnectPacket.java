@@ -3,16 +3,13 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class DisconnectPacket extends PEPacket {
 
     public boolean hideDisconnectionScreen;
     public String message;
 
     public DisconnectPacket() {
-
     }
 
     public DisconnectPacket(boolean hideDisconnectionScreen, String message) {
@@ -21,7 +18,7 @@ public class DisconnectPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.DISCONNECT_PACKET;
     }
 

@@ -2,7 +2,6 @@ package org.dragonet.protocol.packets;
 
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.utilities.Binary;
 
 public class PlayerHotbarPacket extends PEPacket {
 
@@ -14,7 +13,7 @@ public class PlayerHotbarPacket extends PEPacket {
     public boolean selectHotbarSlot = true;
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAYER_HOTBAR_PACKET;
     }
 

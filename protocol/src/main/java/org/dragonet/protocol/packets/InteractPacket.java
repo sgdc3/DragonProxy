@@ -4,9 +4,7 @@ import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/22.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class InteractPacket extends PEPacket {
 
     public static final byte ACTION_RIGHT_CLICK = 1;
@@ -20,11 +18,10 @@ public class InteractPacket extends PEPacket {
     public Vector3F position;
 
     public InteractPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.INTERACT_PACKET;
     }
 

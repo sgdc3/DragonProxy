@@ -1,8 +1,8 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.entity.Skin;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.entity.Skin;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class PlayerSkinPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAYER_SKIN_PACKET;
     }
 

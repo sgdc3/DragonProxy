@@ -16,7 +16,7 @@ public class SetDifficultyPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_DIFFICULTY_PACKET;
     }
 

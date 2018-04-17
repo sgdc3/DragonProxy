@@ -1,8 +1,8 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
 /**
  * Created on 2017/10/22.
@@ -42,7 +42,7 @@ public class PlayerActionPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAYER_ACTION_PACKET;
     }
 

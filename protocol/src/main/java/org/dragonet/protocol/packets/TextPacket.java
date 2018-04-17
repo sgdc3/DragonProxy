@@ -3,9 +3,9 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+import java.util.Objects;
+
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class TextPacket extends PEPacket {
 
     public static final int TYPE_RAW = 0;
@@ -29,11 +29,10 @@ public class TextPacket extends PEPacket {
     public String unk1;
 
     public TextPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.TEXT_PACKET;
     }
 
@@ -77,9 +76,6 @@ public class TextPacket extends PEPacket {
         switch (type) {
             case TYPE_CHAT:
             case TYPE_WHISPER:
-                /**
-                 * @noinspection PhpMissingBreakStatementInspection
-                 */
             case TYPE_ANNOUNCEMENT:
                 putString(source);
                 putString(sourceThirdPartyName);
@@ -105,16 +101,7 @@ public class TextPacket extends PEPacket {
                 break;
         }
 
-        if (xboxUserId != null) {
-            putString(xboxUserId);
-        } else {
-            putString("");
-        }
-
-        if (unk1 != null) {
-            putString(unk1);
-        } else {
-            putString("");
-        }
+        putString(Objects.requireNonNullElse(xboxUserId, ""));
+        putString(Objects.requireNonNullElse(unk1, ""));
     }
 }

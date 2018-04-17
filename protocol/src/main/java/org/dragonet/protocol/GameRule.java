@@ -1,25 +1,29 @@
-package org.dragonet.common.utilities;
+package org.dragonet.protocol;
 
+
+import java.util.Optional;
+
+@SuppressWarnings({"unused", "WeakerAccess"})
 /**
- * Created on 2017/10/21.
+ * This class was taken from the Nukkit project.
  */
 public class GameRule {
 
-    public String name;
-    public GameRuleType type;
-    public Object value;
+    private String name;
+    private GameRuleType type;
+    private Optional<Object> value;
 
     public enum GameRuleType {
         UNKNOWN, BOOLEAN, VARUINT, FLOAT
     }
 
-    public GameRule(String name, GameRuleType type, Object value) {
+    public GameRule(String name, GameRuleType type, Optional<Object> value) {
         this.name = name;
         this.type = type;
         this.value = value;
     }
 
-    public static GameRule read(BinaryStream source) {
+    public static GameRule read(PEBinaryStream source) {
         String name = source.getString();
         GameRuleType type = GameRuleType.values()[(int) source.getUnsignedVarInt()];
         Object value;
@@ -37,10 +41,10 @@ public class GameRule {
                 value = null;
                 break;
         }
-        return new GameRule(name, type, value);
+        return new GameRule(name, type, Optional.ofNullable(value));
     }
 
-    public void write(BinaryStream out) {
+    public void write(PEBinaryStream out) {
         if (type.ordinal() == 0) {
             return; // wtf
         }

@@ -52,6 +52,7 @@
             <groupId>org.dragonet.proxy</groupId>
             <artifactId>dragonproxy-protocol</artifactId>
             <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.pf4j</groupId>

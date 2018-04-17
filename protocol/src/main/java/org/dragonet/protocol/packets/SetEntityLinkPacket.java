@@ -1,6 +1,5 @@
 package org.dragonet.protocol.packets;
 
-import org.dragonet.common.data.entity.PEEntityLink;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
@@ -13,7 +12,7 @@ public class SetEntityLinkPacket extends PEPacket {
     public static final byte TYPE_RIDE = 1;
     public static final byte TYPE_PASSENGER = 2;
 
-//    public PEEntityLink link;
+    //    public PEEntityLink link;
     public long riding;
     public long rider;
     public byte type;
@@ -34,7 +33,7 @@ public class SetEntityLinkPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_ENTITY_LINK_PACKET;
     }
 }

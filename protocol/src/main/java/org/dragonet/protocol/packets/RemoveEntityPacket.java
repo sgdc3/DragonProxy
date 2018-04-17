@@ -19,7 +19,7 @@ public class RemoveEntityPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.REMOVE_ENTITY_PACKET;
     }
 

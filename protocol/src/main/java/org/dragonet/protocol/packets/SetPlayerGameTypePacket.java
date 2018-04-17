@@ -15,7 +15,7 @@ public class SetPlayerGameTypePacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_PLAYER_GAME_TYPE_PACKET;
     }
 

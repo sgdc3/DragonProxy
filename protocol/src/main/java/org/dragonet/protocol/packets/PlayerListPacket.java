@@ -3,7 +3,6 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 import org.dragonet.protocol.type.PlayerListEntry;
-import org.dragonet.common.data.entity.Skin;
 
 /**
  * Created on 2017/10/22.
@@ -20,7 +19,7 @@ public class PlayerListPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.PLAYER_LIST_PACKET;
     }
 

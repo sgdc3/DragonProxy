@@ -23,7 +23,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.common.utilities.LoginChainDecoder;
 import org.dragonet.common.utilities.ReflectedClass;
 import org.dragonet.plugin.bungeecord.compat.luckperms.LuckPermsCompat;
@@ -34,15 +34,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class DPAddonBungee extends Plugin implements Listener {
+public class DragonProxyBungeeAddon extends Plugin implements Listener {
 
-    private static DPAddonBungee instance;
+    private static DragonProxyBungeeAddon instance;
     private Config config;
 //    private List<InetAddress> whitelist = new ArrayList();
 
     public final Set<UUID> bedrockPlayers = Collections.synchronizedSet(new HashSet<>());
 
-    public static DPAddonBungee getInstance() {
+    public static DragonProxyBungeeAddon getInstance() {
         return instance;
     }
     
@@ -122,7 +122,7 @@ public class DPAddonBungee extends Plugin implements Listener {
             return;
         // forward the DragonProxy Notification message!
         getProxy().getScheduler().schedule(this, () -> {
-            BinaryStream bis = new BinaryStream();
+            PEBinaryStream bis = new PEBinaryStream();
             bis.putString("Notification");
             event.getPlayer().sendData("DragonProxy", bis.getBuffer());
         }, 2000L, TimeUnit.MILLISECONDS);
@@ -133,7 +133,7 @@ public class DPAddonBungee extends Plugin implements Listener {
         if (!bedrockPlayers.contains(event.getPlayer().getUniqueId()))
             return;
         // We don't know that another server supports forwarding or not so we disable forwarding for now!
-        BinaryStream bis = new BinaryStream();
+        PEBinaryStream bis = new PEBinaryStream();
         bis.putString("PacketFoward");
         bis.putBoolean(false);
         event.getPlayer().sendData("DragonProxy", bis.getBuffer());

@@ -1,8 +1,8 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
 /**
  * Created on 2017/10/21.
@@ -18,7 +18,7 @@ public class InventorySlotPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.INVENTORY_SLOT_PACKET;
     }
 

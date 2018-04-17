@@ -1,28 +1,26 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.nbt.NBTIO;
+import org.dragonet.common.data.nbt.tag.CompoundTag;
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
 import java.nio.ByteOrder;
 
-import org.dragonet.common.data.nbt.NBTIO;
-import org.dragonet.common.data.nbt.tag.CompoundTag;
-
-/**
- * Created on 2017/10/22.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class BlockEntityDataPacket extends PEPacket {
 
     public BlockPosition blockPosition;
     public CompoundTag tag;
 
-    public BlockEntityDataPacket() {
-
+    public BlockEntityDataPacket(BlockPosition blockPosition, CompoundTag tag) {
+        this.blockPosition = blockPosition;
+        this.tag = tag;
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.BLOCK_ENTITY_DATA_PACKET;
     }
 

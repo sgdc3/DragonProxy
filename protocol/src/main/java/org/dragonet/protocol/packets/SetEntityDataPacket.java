@@ -17,7 +17,7 @@ public class SetEntityDataPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.SET_ENTITY_DATA_PACKET;
     }
 

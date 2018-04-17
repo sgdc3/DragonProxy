@@ -3,9 +3,7 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/21.
- */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class AdventureSettingsPacket extends PEPacket {
 
     public static final int PERMISSION_NORMAL = 0;
@@ -52,12 +50,17 @@ public class AdventureSettingsPacket extends PEPacket {
     public int customFlags;
     public long eid;
 
-    public AdventureSettingsPacket() {
-
+    public AdventureSettingsPacket(int flags, int commandsPermission, int actionPermissions, int playerPermission, int customFlags, long eid) {
+        this.flags = flags;
+        this.commandsPermission = commandsPermission;
+        this.actionPermissions = actionPermissions;
+        this.playerPermission = playerPermission;
+        this.customFlags = customFlags;
+        this.eid = eid;
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.ADVENTURE_SETTINGS_PACKET;
     }
 

@@ -8,7 +8,7 @@
  */
 package org.dragonet.protocol.type.chunk;
 
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 
 import java.util.Arrays;
 
@@ -32,13 +32,13 @@ public class Section {
         this.blockMetas = blockMetas;
     }
 
-    public void encode(BinaryStream out) {
+    public void encode(PEBinaryStream out) {
         out.putByte(storageVersion);
         out.put(blockIds);
         out.put(blockMetas);
     }
 
-    public void decode(BinaryStream in) {
+    public void decode(PEBinaryStream in) {
         storageVersion = (byte) (in.getByte() & 0xFF);
         blockIds = in.get(4096);
         blockMetas = in.get(2048);

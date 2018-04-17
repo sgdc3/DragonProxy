@@ -1,41 +1,36 @@
 package org.dragonet.protocol.packets;
 
-import java.util.Collection;
-
 import org.dragonet.common.data.entity.PEEntityAttribute;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-/**
- * Created on 2017/10/23.
- */
+import java.util.Collection;
+
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class UpdateAttributesPacket extends PEPacket {
 
     public long rtid;
     public Collection<PEEntityAttribute> entries;
 
     public UpdateAttributesPacket() {
-
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.UPDATE_ATTRIBUTES_PACKET;
     }
 
     @Override
     public void encodePayload() {
         putUnsignedVarLong(rtid);
-//        System.out.println("PEEntityAttribute entity " + rtid);
         if (entries != null && entries.size() > 0) {
             putUnsignedVarInt(entries.size());
-            for (PEEntityAttribute attr : entries) {
-//                System.out.println("PEEntityAttribute " + attr.name + " : " + attr.currentValue);
-                putLFloat(attr.min);
-                putLFloat(attr.max);
-                putLFloat(attr.currentValue);
-                putLFloat(attr.defaultValue);
-                putString(attr.name);
+            for (PEEntityAttribute attribute : entries) {
+                putLFloat(attribute.min);
+                putLFloat(attribute.max);
+                putLFloat(attribute.currentValue);
+                putLFloat(attribute.defaultValue);
+                putString(attribute.name);
             }
         } else {
             putUnsignedVarInt(0);
@@ -44,6 +39,5 @@ public class UpdateAttributesPacket extends PEPacket {
 
     @Override
     public void decodePayload() {
-
     }
 }

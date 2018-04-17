@@ -13,7 +13,7 @@ public class ResourcePacksInfoPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.RESOURCE_PACKS_INFO_PACKET;
     }
 

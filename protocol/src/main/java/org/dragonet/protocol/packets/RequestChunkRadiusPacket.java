@@ -15,7 +15,7 @@ public class RequestChunkRadiusPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int getPacketId() {
         return ProtocolInfo.REQUEST_CHUNK_RADIUS_PACKET;
     }
 

@@ -1,9 +1,10 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class AddPaintingPacket extends PEPacket {
 
     public long eid;
@@ -12,9 +13,17 @@ public class AddPaintingPacket extends PEPacket {
     public int direction;
     public String title;
 
-    @Override
-    public void decodePayload() {
+    public AddPaintingPacket(long eid, long rtid, BlockPosition pos, int direction, String title) {
+        this.eid = eid;
+        this.rtid = rtid;
+        this.pos = pos;
+        this.direction = direction;
+        this.title = title;
+    }
 
+    @Override
+    public int getPacketId() {
+        return ProtocolInfo.ADD_PAINTING_PACKET;
     }
 
     @Override
@@ -28,8 +37,6 @@ public class AddPaintingPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
-        return ProtocolInfo.ADD_PAINTING_PACKET;
+    public void decodePayload() {
     }
-
 }

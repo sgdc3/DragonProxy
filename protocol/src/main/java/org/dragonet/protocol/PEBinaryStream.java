@@ -1,41 +1,45 @@
-package org.dragonet.common.utilities;
+package org.dragonet.protocol;
 
-import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.data.entity.PEEntityAttribute;
+import org.dragonet.common.data.entity.PEEntityLink;
+import org.dragonet.common.data.entity.Skin;
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.data.nbt.NBTIO;
 import org.dragonet.common.data.nbt.tag.CompoundTag;
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
-import org.dragonet.common.data.entity.PEEntityLink;
-import org.dragonet.common.data.inventory.Slot;
+import org.dragonet.common.utilities.Binary;
+import org.dragonet.common.utilities.VarInt;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import org.dragonet.common.data.entity.Skin;
 
 /**
- * author: MagicDroidX Nukkit Project
+ * This class was taken from the Nukkit project.
+ * @author MagicDroidX
  */
-public class BinaryStream {
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class PEBinaryStream {
+
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     public int offset;
     private byte[] buffer = new byte[32];
     private int count;
 
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
-
-    public BinaryStream() {
+    public PEBinaryStream() {
         this.buffer = new byte[32];
         this.offset = 0;
         this.count = 0;
     }
 
-    public BinaryStream(byte[] buffer) {
+    public PEBinaryStream(byte[] buffer) {
         this(buffer, 0);
     }
 
-    public BinaryStream(byte[] buffer, int offset) {
+    public PEBinaryStream(byte[] buffer, int offset) {
         this.buffer = buffer;
         this.offset = offset;
         this.count = buffer.length;
@@ -194,8 +198,8 @@ public class BinaryStream {
         this.putByte((byte) (bool ? 1 : 0));
     }
 
-    public int getByte() {
-        return this.buffer[this.offset++] & 0xff;
+    public byte getByte() {
+        return (byte) (this.buffer[this.offset++] & 0xff);
     }
 
     public void putByte(byte b) {
@@ -209,13 +213,13 @@ public class BinaryStream {
         putByte(link.unknownByte);
     }
 
-//    public PEEntityLink getEntityLink() {
-//        return new PEEntityLink(
-//                getVarLong(),
-//                getVarLong(),
-//                getByte(),
-//                getByte());
-//    }
+    public PEEntityLink getEntityLink() {
+        return new PEEntityLink(
+            getVarLong(),
+            getVarLong(),
+            getByte(),
+            getByte());
+    }
 
     public Map<String, GameRule> getGameRules() {
         int count = (int) getUnsignedVarInt();
@@ -251,7 +255,7 @@ public class BinaryStream {
      *
      * @return Attribute[]
      */
-    public PEEntityAttribute[] getAttributeList() throws Exception {
+    public Optional<List<PEEntityAttribute>> getEntityAttributes() throws Exception {
         List<PEEntityAttribute> list = new ArrayList<>();
         long count = this.getUnsignedVarInt();
 

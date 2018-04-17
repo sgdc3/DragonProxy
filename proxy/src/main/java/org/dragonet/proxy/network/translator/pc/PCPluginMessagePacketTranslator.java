@@ -22,7 +22,7 @@ import org.dragonet.protocol.WrappedPEPacket;
 import org.dragonet.protocol.packets.StopSoundPacket;
 import org.dragonet.api.network.translator.PCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 
 public class PCPluginMessagePacketTranslator implements PCPacketTranslator<ServerPluginMessagePacket> {
 	
@@ -37,7 +37,7 @@ public class PCPluginMessagePacketTranslator implements PCPacketTranslator<Serve
 	@Override
 	public PEPacket[] translate(UpstreamSession session, ServerPluginMessagePacket packet) {
 		String channel = packet.getChannel();
-		BinaryStream bis = new BinaryStream(packet.getData());
+		PEBinaryStream bis = new PEBinaryStream(packet.getData());
 		
 		if(channel.equals(CHANNEL_DRAGONPROXY)) {
 			String command = bis.getString();

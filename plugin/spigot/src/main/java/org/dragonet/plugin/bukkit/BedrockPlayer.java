@@ -3,7 +3,7 @@ package org.dragonet.plugin.bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.dragonet.common.gui.ModalFormComponent;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.ModalFormRequestPacket;
 
@@ -45,10 +45,10 @@ public class BedrockPlayer {
         request.formData = formData;
         request.encode();
 
-        BinaryStream bis = new BinaryStream();
+        PEBinaryStream bis = new PEBinaryStream();
         bis.putString("SendPacket");
         bis.putByteArray(request.getBuffer());
-        player.sendPluginMessage(DPAddonBukkit.getInstance(), "DragonProxy", bis.getBuffer());
+        player.sendPluginMessage(DragonProxyBukkitAddon.getInstance(), "DragonProxy", bis.getBuffer());
     }
 
 
@@ -58,11 +58,11 @@ public class BedrockPlayer {
     // static
     public static void createForPlayer(Player player) {
         if(player.hasMetadata("BedrockPlayer")) {
-            DPAddonBukkit.getInstance().getLogger().info("BedrockPlayer " + player.getName() + " already have the Bedrock Metadata");
+            DragonProxyBukkitAddon.getInstance().getLogger().info("BedrockPlayer " + player.getName() + " already have the Bedrock Metadata");
             return;
         }
         player.setMetadata("BedrockPlayer", new FixedMetadataValue(
-                DPAddonBukkit.getInstance(),
+                DragonProxyBukkitAddon.getInstance(),
                 new BedrockPlayer(player)
         ));
     }

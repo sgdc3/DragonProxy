@@ -23,7 +23,7 @@ import org.dragonet.api.network.UpstreamSession;
 import org.dragonet.common.gui.CustomFormComponent;
 import org.dragonet.common.gui.InputComponent;
 import org.dragonet.common.gui.LabelComponent;
-import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.PEBinaryStream;
 import org.dragonet.common.utilities.JsonUtil;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.Protocol;
@@ -116,7 +116,7 @@ public class PEPacketProcessor {
 
         // Wait for player logginig in
         if ("online_login_wait".equals(this.client.getDataCache().get(CacheKey.AUTHENTICATION_STATE))) {
-            if (packet.pid() == ProtocolInfo.MOVE_PLAYER_PACKET) {
+            if (packet.getPacketId() == ProtocolInfo.MOVE_PLAYER_PACKET) {
 
                 InputComponent username = new InputComponent(this.client.getProxy().getLang().get(Lang.FORM_LOGIN_USERNAME)).setPlaceholder("steve@example.com");
                 InputComponent password = new InputComponent(this.client.getProxy().getLang().get(Lang.FORM_LOGIN_PASSWORD)).setPlaceholder("123456");
@@ -139,7 +139,7 @@ public class PEPacketProcessor {
                 return;
             }
 
-            if (packet.pid() == ProtocolInfo.MODAL_FORM_RESPONSE_PACKET) {
+            if (packet.getPacketId() == ProtocolInfo.MODAL_FORM_RESPONSE_PACKET) {
                 try {
                     this.client.sendChat(this.client.getProxy().getLang().get(Lang.MESSAGE_LOGIN_PROGRESS));
 
@@ -154,7 +154,7 @@ public class PEPacketProcessor {
             }
         }
 
-        switch (packet.pid()) {
+        switch (packet.getPacketId()) {
             case ProtocolInfo.BATCH_PACKET:
                 DragonProxy.getInstance().getLogger().debug("Received batch packet from client !");
                 break;
@@ -171,7 +171,7 @@ public class PEPacketProcessor {
                     break;
 
                 if (enableForward.get() && FORWARDED_PACKETS.contains(packet.getClass())) {
-                    BinaryStream bis = new BinaryStream();
+                    PEBinaryStream bis = new PEBinaryStream();
                     bis.putString("PacketForward");
                     bis.putByteArray(packet.getBuffer());
                     ClientPluginMessagePacket msg = new ClientPluginMessagePacket("DragonProxy", bis.getBuffer());
